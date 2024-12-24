@@ -18,16 +18,32 @@ class Tabuleiro:
         self._posicionar_equipe(Equipe.CURIACIOS, self.linhas - 3)
         self.mensagens.append("Jogo iniciado - Turno dos Horácios")
 
-    def _posicionar_equipe(self, equipe: Equipe, linha_inicial: int):
-        # Distribuição na ordem: arqueiros, lanceiros, espadachins
+ def _posicionar_equipe(self, equipe: Equipe, linha_inicial: int):
+    # Distribuição diferente para cada equipe
+    if equipe == Equipe.HORACIOS:
         tipos_unidades = [
-            # Arqueiros nas bordas (primeira linha)
+            # Arqueiros atrás (primeira linha)
             [TipoUnidade.ARQUEIRO, TipoUnidade.ARQUEIRO, TipoUnidade.ARQUEIRO],
             # Lanceiros no meio (segunda linha)
             [TipoUnidade.LANCEIRO, TipoUnidade.LANCEIRO, TipoUnidade.LANCEIRO],
             # Espadachins na frente (terceira linha)
             [TipoUnidade.ESPADACHIM, TipoUnidade.ESPADACHIM, TipoUnidade.ESPADACHIM]
         ]
+    else:  # Equipe.CURIACIOS
+        tipos_unidades = [
+            # Espadachins atrás (primeira linha)
+            [TipoUnidade.ESPADACHIM, TipoUnidade.ESPADACHIM, TipoUnidade.ESPADACHIM],
+            # Lanceiros no meio (segunda linha)
+            [TipoUnidade.LANCEIRO, TipoUnidade.LANCEIRO, TipoUnidade.LANCEIRO],
+            # Arqueiros na frente (terceira linha)
+            [TipoUnidade.ARQUEIRO, TipoUnidade.ARQUEIRO, TipoUnidade.ARQUEIRO]
+        ]
+
+    for i, linha_tipos in enumerate(tipos_unidades):
+        for j, tipo_unidade in enumerate(linha_tipos):
+            linha = linha_inicial + i
+            coluna = (self.colunas // 2 - 1) + (j - 1)  # Centralizar na horizontal
+            self.tabuleiro[linha][coluna] = Unidade(tipo_unidade, equipe, (linha, coluna))
 
         for i, linha_tipos in enumerate(tipos_unidades):
             for j, tipo_unidade in enumerate(linha_tipos):
