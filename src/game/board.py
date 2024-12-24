@@ -155,3 +155,39 @@ class Tabuleiro:
                 if unidade and unidade.esta_vivo:
                     if unidade.arma.quantidade > 0:
                         todas_unidades_sem_armas = False
+                    if unidade.equipe == Equipe.HORACIOS:
+                        horacios_vivos = True
+                    elif unidade.equipe == Equipe.CURIACIOS:
+                        curiacios_vivos = True
+
+        # Verificar condição de paz
+        if todas_unidades_sem_armas and horacios_vivos and curiacios_vivos:
+            self.mensagens.append("Paz declarada - Todas as unidades sem armas!")
+            return None
+
+        # Verificar vitória
+        if not horacios_vivos and not curiacios_vivos:
+            self.mensagens.append("Empate - Todos os guerreiros caíram!")
+            return None
+        elif not curiacios_vivos:
+            self.mensagens.append("Vitória dos Horácios!")
+            return Equipe.HORACIOS
+        elif not horacios_vivos:
+            self.mensagens.append("Vitória dos Curiácios!")
+            return Equipe.CURIACIOS
+        
+        return None
+
+    def get_status_jogo(self) -> dict:
+        """Retorna um dicionário com o status atual do jogo"""
+        return {
+            'equipe_atual': self.equipe_atual,
+            'armas_no_tabuleiro': len(self.armas_no_tabuleiro),
+            'mensagens': self.mensagens[-5:],  # Últimas 5 mensagens
+            'horacios_vivos': sum(1 for linha in self.tabuleiro 
+                                for unidade in linha 
+                                if unidade and unidade.equipe == Equipe.HORACIOS and unidade.esta_vivo),
+            'curiacios_vivos': sum(1 for linha in self.tabuleiro 
+                                 for unidade in linha 
+                                 if unidade and unidade.equipe == Equipe.CURIACIOS and unidade.esta_vivo)
+        }
