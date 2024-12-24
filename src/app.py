@@ -52,7 +52,7 @@ def clicar_celula(i, j):
         unidade = tabuleiro.get_unidade((i, j))
         if unidade and unidade.equipe == tabuleiro.equipe_atual:
             st.session_state.unidade_selecionada = (i, j)
-            st.session_state.mensagens.append(f"Unidade selecionada na posição ({i}, {j})")
+            tabuleiro.mensagens.append(f"Unidade selecionada na posição ({i}, {j})")
     else:
         # Se já há uma unidade selecionada
         origem = st.session_state.unidade_selecionada
