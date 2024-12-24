@@ -1,4 +1,4 @@
-# https://os-horacios-e-os-curiacios-ymzhdmf7tdt4ikyslr5urf.streamlit.app/
+https://os-horacios-e-os-curiacios-ymzhdmf7tdt4ikyslr5urf.streamlit.app/
 
 ## Os Horácios e os Curiácios - Jogo de Estratégia
 
