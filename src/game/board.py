@@ -11,7 +11,7 @@ class Tabuleiro:
         self.mensagens = []
         self.inicializar_tabuleiro()
 
-    def _posicionar_equipe(self, equipe: Equipe, linha_inicial: int):
+    def posicionar_equipe(self, equipe: Equipe, linha_inicial: int):
         # Distribuição diferente para cada equipe
         if equipe == Equipe.HORACIOS:
             tipos_unidades = [
@@ -40,9 +40,9 @@ class Tabuleiro:
 
     def inicializar_tabuleiro(self):
         # Horácios no topo
-        self._posicionar_equipe(Equipe.HORACIOS, 0)
+        self.posicionar_equipe(Equipe.HORACIOS, 0)
         # Curiácios na base
-        self._posicionar_equipe(Equipe.CURIACIOS, self.linhas - 3)
+        self.posicionar_equipe(Equipe.CURIACIOS, self.linhas - 3)
         self.mensagens.append("Jogo iniciado - Turno dos Horácios")
 
     def get_unidade(self, posicao: Tuple[int, int]) -> Optional[Unidade]:
@@ -71,7 +71,7 @@ class Tabuleiro:
 
         if unidade.pode_mover(pos_destino, (self.linhas, self.colunas)):
             # Verificar se há armas no caminho que podem ser coletadas
-            self._coletar_armas_no_caminho(unidade, pos_origem, pos_destino)
+            self.coletar_armas_no_caminho(unidade, pos_origem, pos_destino)
             
             self.tabuleiro[pos_destino[0]][pos_destino[1]] = unidade
             self.tabuleiro[pos_origem[0]][pos_origem[1]] = None
@@ -82,7 +82,7 @@ class Tabuleiro:
         self.mensagens.append("Movimento inválido")
         return False
 
-    def _coletar_armas_no_caminho(self, unidade: Unidade, pos_origem: Tuple[int, int], pos_destino: Tuple[int, int]):
+    def coletar_armas_no_caminho(self, unidade: Unidade, pos_origem: Tuple[int, int], pos_destino: Tuple[int, int]):
         # Se a unidade não tem armas, pode coletar do caminho
         if unidade.arma.quantidade == 0:
             armas_para_remover = []
@@ -161,7 +161,7 @@ class Tabuleiro:
                         curiacios_vivos = True
 
         # Verificar condição de paz
-        if todas_unidades_sem_armas and horacios_vivos and curiacios_vivos:
+        if todas_unidades_sem_armas e horacios_vivos e curiacios_vivos:
             self.mensagens.append("Paz declarada - Todas as unidades sem armas!")
             return None
 
