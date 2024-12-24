@@ -13,37 +13,37 @@ class Tabuleiro:
 
     def inicializar_tabuleiro(self):
         # Horácios no topo
-        self._posicionar_equipe(Equipe.HORACIOS, 0)
+        self.posicionar_equipe(Equipe.HORACIOS, 0)
         # Curiácios na base
-        self._posicionar_equipe(Equipe.CURIACIOS, self.linhas - 3)
+        self.posicionar_equipe(Equipe.CURIACIOS, self.linhas - 3)
         self.mensagens.append("Jogo iniciado - Turno dos Horácios")
 
-def _posicionar_equipe(self, equipe: Equipe, linha_inicial: int):
-    # Distribuição diferente para cada equipe
-    if equipe == Equipe.HORACIOS:
-        tipos_unidades = [
-            # Arqueiros atrás (primeira linha)
-            [TipoUnidade.ARQUEIRO, TipoUnidade.ARQUEIRO, TipoUnidade.ARQUEIRO],
-            # Lanceiros no meio (segunda linha)
-            [TipoUnidade.LANCEIRO, TipoUnidade.LANCEIRO, TipoUnidade.LANCEIRO],
-            # Espadachins na frente (terceira linha)
-            [TipoUnidade.ESPADACHIM, TipoUnidade.ESPADACHIM, TipoUnidade.ESPADACHIM]
-        ]
-    else:  # Equipe.CURIACIOS
-        tipos_unidades = [
-            # Espadachins atrás (primeira linha)
-            [TipoUnidade.ESPADACHIM, TipoUnidade.ESPADACHIM, TipoUnidade.ESPADACHIM],
-            # Lanceiros no meio (segunda linha)
-            [TipoUnidade.LANCEIRO, TipoUnidade.LANCEIRO, TipoUnidade.LANCEIRO],
-            # Arqueiros na frente (terceira linha)
-            [TipoUnidade.ARQUEIRO, TipoUnidade.ARQUEIRO, TipoUnidade.ARQUEIRO]
-        ]
+    def posicionar_equipe(self, equipe: Equipe, linha_inicial: int):
+        # Distribuição diferente para cada equipe
+        if equipe == Equipe.HORACIOS:
+            tipos_unidades = [
+                # Arqueiros atrás (primeira linha)
+                [TipoUnidade.ARQUEIRO, TipoUnidade.ARQUEIRO, TipoUnidade.ARQUEIRO],
+                # Lanceiros no meio (segunda linha)
+                [TipoUnidade.LANCEIRO, TipoUnidade.LANCEIRO, TipoUnidade.LANCEIRO],
+                # Espadachins na frente (terceira linha)
+                [TipoUnidade.ESPADACHIM, TipoUnidade.ESPADACHIM, TipoUnidade.ESPADACHIM]
+            ]
+        else:  # Equipe.CURIACIOS
+            tipos_unidades = [
+                # Espadachins atrás (primeira linha)
+                [TipoUnidade.ESPADACHIM, TipoUnidade.ESPADACHIM, TipoUnidade.ESPADACHIM],
+                # Lanceiros no meio (segunda linha)
+                [TipoUnidade.LANCEIRO, TipoUnidade.LANCEIRO, TipoUnidade.LANCEIRO],
+                # Arqueiros na frente (terceira linha)
+                [TipoUnidade.ARQUEIRO, TipoUnidade.ARQUEIRO, TipoUnidade.ARQUEIRO]
+            ]
 
-    for i, linha_tipos in enumerate(tipos_unidades):
-        for j, tipo_unidade in enumerate(linha_tipos):
-            linha = linha_inicial + i
-            coluna = (self.colunas // 2 - 1) + (j - 1)  # Centralizar na horizontal
-            self.tabuleiro[linha][coluna] = Unidade(tipo_unidade, equipe, (linha, coluna))
+        for i, linha_tipos in enumerate(tipos_unidades):
+            for j, tipo_unidade in enumerate(linha_tipos):
+                linha = linha_inicial + i
+                coluna = (self.colunas // 2 - 1) + (j - 1)  # Centralizar na horizontal
+                self.tabuleiro[linha][coluna] = Unidade(tipo_unidade, equipe, (linha, coluna))
 
     def get_unidade(self, posicao: Tuple[int, int]) -> Optional[Unidade]:
         if 0 <= posicao[0] < self.linhas and 0 <= posicao[1] < self.colunas:
@@ -71,7 +71,7 @@ def _posicionar_equipe(self, equipe: Equipe, linha_inicial: int):
 
         if unidade.pode_mover(pos_destino, (self.linhas, self.colunas)):
             # Verificar se há armas no caminho que podem ser coletadas
-            self._coletar_armas_no_caminho(unidade, pos_origem, pos_destino)
+            self.coletar_armas_no_caminho(unidade, pos_origem, pos_destino)
             
             self.tabuleiro[pos_destino[0]][pos_destino[1]] = unidade
             self.tabuleiro[pos_origem[0]][pos_origem[1]] = None
@@ -82,7 +82,7 @@ def _posicionar_equipe(self, equipe: Equipe, linha_inicial: int):
         self.mensagens.append("Movimento inválido")
         return False
 
-    def _coletar_armas_no_caminho(self, unidade: Unidade, pos_origem: Tuple[int, int], pos_destino: Tuple[int, int]):
+    def coletar_armas_no_caminho(self, unidade: Unidade, pos_origem: Tuple[int, int], pos_destino: Tuple[int, int]):
         # Se a unidade não tem armas, pode coletar do caminho
         if unidade.arma.quantidade == 0:
             armas_para_remover = []
@@ -155,39 +155,3 @@ def _posicionar_equipe(self, equipe: Equipe, linha_inicial: int):
                 if unidade and unidade.esta_vivo:
                     if unidade.arma.quantidade > 0:
                         todas_unidades_sem_armas = False
-                    if unidade.equipe == Equipe.HORACIOS:
-                        horacios_vivos = True
-                    elif unidade.equipe == Equipe.CURIACIOS:
-                        curiacios_vivos = True
-
-        # Verificar condição de paz
-        if todas_unidades_sem_armas and horacios_vivos and curiacios_vivos:
-            self.mensagens.append("Paz declarada - Todas as unidades sem armas!")
-            return None
-
-        # Verificar vitória
-        if not horacios_vivos and not curiacios_vivos:
-            self.mensagens.append("Empate - Todos os guerreiros caíram!")
-            return None
-        elif not curiacios_vivos:
-            self.mensagens.append("Vitória dos Horácios!")
-            return Equipe.HORACIOS
-        elif not horacios_vivos:
-            self.mensagens.append("Vitória dos Curiácios!")
-            return Equipe.CURIACIOS
-        
-        return None
-
-    def get_status_jogo(self) -> dict:
-        """Retorna um dicionário com o status atual do jogo"""
-        return {
-            'equipe_atual': self.equipe_atual,
-            'armas_no_tabuleiro': len(self.armas_no_tabuleiro),
-            'mensagens': self.mensagens[-5:],  # Últimas 5 mensagens
-            'horacios_vivos': sum(1 for linha in self.tabuleiro 
-                                for unidade in linha 
-                                if unidade and unidade.equipe == Equipe.HORACIOS and unidade.esta_vivo),
-            'curiacios_vivos': sum(1 for linha in self.tabuleiro 
-                                 for unidade in linha 
-                                 if unidade and unidade.equipe == Equipe.CURIACIOS and unidade.esta_vivo)
-        }
