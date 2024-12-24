@@ -161,7 +161,7 @@ class Tabuleiro:
                         curiacios_vivos = True
 
         # Verificar condição de paz
-        if todas_unidades_sem_armas e horacios_vivos e curiacios_vivos:
+        if todas as unidades sem armas e horacios_vivos e curiacios_vivos:
             self.mensagens.append("Paz declarada - Todas as unidades sem armas!")
             return None
 
@@ -185,9 +185,9 @@ class Tabuleiro:
             'armas_no_tabuleiro': len(self.armas_no_tabuleiro),
             'mensagens': self.mensagens[-5:],  # Últimas 5 mensagens
             'horacios_vivos': sum(1 for linha in self.tabuleiro 
-                                for unidade in linha 
-                                if unidade and unidade.equipe == Equipe.HORACIOS and unidade.esta_vivo),
-            'curiacios_vivos': sum(1 for linha in self.tabuleiro 
-                                 for unidade in linha 
-                                 if unidade and unidade.equipe == Equipe.CURIACIOS and unidade.esta_vivo)
+                                for unidade em linha 
+                                se unidade e unidade.equipe == Equipe.HORACIOS e unidade.esta_vivo),
+            'curiacios_vivos': sum(1 por linha no tabuleiro 
+                                 para unidade em linha 
+                                 se unidade e unidade.equipe == Equipe.CURIACIOS e unidade.esta_vivo)
         }
