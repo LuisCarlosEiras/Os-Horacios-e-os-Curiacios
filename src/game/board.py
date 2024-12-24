@@ -11,14 +11,7 @@ class Tabuleiro:
         self.mensagens = []
         self.inicializar_tabuleiro()
 
-    def inicializar_tabuleiro(self):
-        # Horácios no topo
-        self.posicionar_equipe(Equipe.HORACIOS, 0)
-        # Curiácios na base
-        self.posicionar_equipe(Equipe.CURIACIOS, self.linhas - 3)
-        self.mensagens.append("Jogo iniciado - Turno dos Horácios")
-
-    def posicionar_equipe(self, equipe: Equipe, linha_inicial: int):
+    def _posicionar_equipe(self, equipe: Equipe, linha_inicial: int):
         # Distribuição diferente para cada equipe
         if equipe == Equipe.HORACIOS:
             tipos_unidades = [
@@ -44,6 +37,13 @@ class Tabuleiro:
                 linha = linha_inicial + i
                 coluna = (self.colunas // 2 - 1) + (j - 1)  # Centralizar na horizontal
                 self.tabuleiro[linha][coluna] = Unidade(tipo_unidade, equipe, (linha, coluna))
+
+    def inicializar_tabuleiro(self):
+        # Horácios no topo
+        self._posicionar_equipe(Equipe.HORACIOS, 0)
+        # Curiácios na base
+        self._posicionar_equipe(Equipe.CURIACIOS, self.linhas - 3)
+        self.mensagens.append("Jogo iniciado - Turno dos Horácios")
 
     def get_unidade(self, posicao: Tuple[int, int]) -> Optional[Unidade]:
         if 0 <= posicao[0] < self.linhas and 0 <= posicao[1] < self.colunas:
@@ -71,7 +71,7 @@ class Tabuleiro:
 
         if unidade.pode_mover(pos_destino, (self.linhas, self.colunas)):
             # Verificar se há armas no caminho que podem ser coletadas
-            self.coletar_armas_no_caminho(unidade, pos_origem, pos_destino)
+            self._coletar_armas_no_caminho(unidade, pos_origem, pos_destino)
             
             self.tabuleiro[pos_destino[0]][pos_destino[1]] = unidade
             self.tabuleiro[pos_origem[0]][pos_origem[1]] = None
@@ -82,7 +82,7 @@ class Tabuleiro:
         self.mensagens.append("Movimento inválido")
         return False
 
-    def coletar_armas_no_caminho(self, unidade: Unidade, pos_origem: Tuple[int, int], pos_destino: Tuple[int, int]):
+    def _coletar_armas_no_caminho(self, unidade: Unidade, pos_origem: Tuple[int, int], pos_destino: Tuple[int, int]):
         # Se a unidade não tem armas, pode coletar do caminho
         if unidade.arma.quantidade == 0:
             armas_para_remover = []
