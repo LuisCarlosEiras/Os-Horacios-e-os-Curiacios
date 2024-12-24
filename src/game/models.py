@@ -1,3 +1,4 @@
+# src/game/models.py
 from enum import Enum
 from typing import Tuple
 
