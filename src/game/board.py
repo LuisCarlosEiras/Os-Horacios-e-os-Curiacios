@@ -90,35 +90,35 @@ class Tabuleiro:
                 if pos == pos_destino:
                     unidade.tipo = arma
                     unidade.arma.tipo = arma
-                    unidade.arma.quantidade = 1 if arma == TipoUnidade.ESPADACHIM else 3
+                    unidade.arma.quantidade = 1 se arma == TipoUnidade.ESPADACHIM else 3
                     armas_para_remover.append((arma, pos))
                     self.mensagens.append(f"Arma coletada: {arma.value}")
             
             # Remover armas coletadas
-            for arma in armas_para_remover:
+            for arma em armas_para_remover:
                 self.armas_no_tabuleiro.remove(arma)
 
     def atacar(self, pos_atacante: Tuple[int, int], pos_alvo: Tuple[int, int]) -> bool:
         atacante = self.tabuleiro[pos_atacante[0]][pos_atacante[1]]
         
-        if not atacante or atacante.equipe != self.equipe_atual:
+        se não atacante ou atacante.equipe != self.equipe_atual:
             self.mensagens.append("Atacante inválido ou não é seu turno")
             return False
 
-        if atacante.arma.quantidade <= 0:
+        se atacante.arma.quantidade <= 0:
             self.mensagens.append("Unidade sem armas")
             return False
 
         alvo = self.tabuleiro[pos_alvo[0]][pos_alvo[1]]
 
         # Verificar se o ataque está dentro do alcance
-        if not atacante.pode_atacar(pos_alvo):
+        se não atacante.pode_atacar(pos_alvo):
             self.mensagens.append("Ataque fora de alcance")
             return False
 
         # Se não houver alvo, mas o ataque é válido, marcar a arma no tabuleiro
-        if not alvo:
-            if atacante.tipo in [TipoUnidade.ARQUEIRO, TipoUnidade.LANCEIRO]:
+        se não alvo:
+            se atacante.tipo em [TipoUnidade.ARQUEIRO, TipoUnidade.LANCEIRO]:
                 self.armas_no_tabuleiro.append((atacante.tipo, pos_alvo))
                 atacante.arma.quantidade -= 1
                 self.mensagens.append(f"Arma perdida no tabuleiro: {atacante.tipo.value}")
@@ -126,12 +126,12 @@ class Tabuleiro:
             return False
 
         # Se o alvo é da mesma equipe
-        if alvo.equipe == atacante.equipe:
+        se alvo.equipe == atacante.equipe:
             self.mensagens.append("Não pode atacar aliados")
             return False
 
         # Ataque bem sucedido
-        if alvo.arma.quantidade > 0:
+        se alvo.arma.quantidade > 0:
             self.armas_no_tabuleiro.append((alvo.tipo, pos_alvo))
         
         self.tabuleiro[pos_alvo[0]][pos_alvo[1]] = None
@@ -142,37 +142,37 @@ class Tabuleiro:
         return True
 
     def proximo_turno(self):
-        self.equipe_atual = Equipe.CURIACIOS if self.equipe_atual == Equipe.HORACIOS else Equipe.HORACIOS
-        self.mensagens.append(f"Turno dos {'Curiácios' if self.equipe_atual == Equipe.CURIACIOS else 'Horácios'}")
+        self.equipe_atual = Equipe.CURIACIOS se a equipe_atual == Equipe.HORACIOS else Equipe.HORACIOS
+        self.mensagens.append(f"Turno dos {'Curiácios' se equipe_atual == Equipe.CURIACIOS else 'Horácios'}")
 
     def verificar_fim_jogo(self) -> Optional[Equipe]:
         horacios_vivos = False
         curiacios_vivos = False
         todas_unidades_sem_armas = True
 
-        for linha in self.tabuleiro:
-            for unidade in linha:
-                if unidade and unidade.esta_vivo:
-                    if unidade.arma.quantidade > 0:
+        para linha em self.tabuleiro:
+            para unidade em linha:
+                se unidade e unidade.esta_vivo:
+                    se unidade.arma.quantidade > 0:
                         todas_unidades_sem_armas = False
-                    if unidade.equipe == Equipe.HORACIOS:
+                    se unidade.equipe == Equipe.HORACIOS:
                         horacios_vivos = True
                     elif unidade.equipe == Equipe.CURIACIOS:
                         curiacios_vivos = True
 
         # Verificar condição de paz
-        if todas as unidades sem armas e horacios_vivos e curiacios_vivos:
+        se todas_unidades_sem_armas e horacios_vivos e curiacios_vivos:
             self.mensagens.append("Paz declarada - Todas as unidades sem armas!")
             return None
 
         # Verificar vitória
-        if not horacios_vivos and not curiacios_vivos:
+        se não horacios_vivos e não curiacios_vivos:
             self.mensagens.append("Empate - Todos os guerreiros caíram!")
             return None
-        elif not curiacios_vivos:
+        elif não curiacios_vivos:
             self.mensagens.append("Vitória dos Horácios!")
             return Equipe.HORACIOS
-        elif not horacios_vivos:
+        elif não horacios_vivos:
             self.mensagens.append("Vitória dos Curiácios!")
             return Equipe.CURIACIOS
         
@@ -184,10 +184,10 @@ class Tabuleiro:
             'equipe_atual': self.equipe_atual,
             'armas_no_tabuleiro': len(self.armas_no_tabuleiro),
             'mensagens': self.mensagens[-5:],  # Últimas 5 mensagens
-            'horacios_vivos': sum(1 for linha in self.tabuleiro 
-                                for unidade em linha 
+            'horacios_vivos': sum(1 para linha em self.tabuleiro 
+                                para unidade em linha 
                                 se unidade e unidade.equipe == Equipe.HORACIOS e unidade.esta_vivo),
-            'curiacios_vivos': sum(1 por linha no tabuleiro 
+            'curiacios_vivos': sum(1 para linha em self.tabuleiro 
                                  para unidade em linha 
                                  se unidade e unidade.equipe == Equipe.CURIACIOS e unidade.esta_vivo)
         }
