@@ -18,7 +18,7 @@ class Tabuleiro:
         self._posicionar_equipe(Equipe.CURIACIOS, self.linhas - 3)
         self.mensagens.append("Jogo iniciado - Turno dos Horácios")
 
- def _posicionar_equipe(self, equipe: Equipe, linha_inicial: int):
+def _posicionar_equipe(self, equipe: Equipe, linha_inicial: int):
     # Distribuição diferente para cada equipe
     if equipe == Equipe.HORACIOS:
         tipos_unidades = [
@@ -44,12 +44,6 @@ class Tabuleiro:
             linha = linha_inicial + i
             coluna = (self.colunas // 2 - 1) + (j - 1)  # Centralizar na horizontal
             self.tabuleiro[linha][coluna] = Unidade(tipo_unidade, equipe, (linha, coluna))
-
-        for i, linha_tipos in enumerate(tipos_unidades):
-            for j, tipo_unidade in enumerate(linha_tipos):
-                linha = linha_inicial + i
-                coluna = (self.colunas // 2 - 1) + (j - 1)  # Centralizar na horizontal
-                self.tabuleiro[linha][coluna] = Unidade(tipo_unidade, equipe, (linha, coluna))
 
     def get_unidade(self, posicao: Tuple[int, int]) -> Optional[Unidade]:
         if 0 <= posicao[0] < self.linhas and 0 <= posicao[1] < self.colunas:
