@@ -12,6 +12,8 @@ def inicializar_estado():
         st.session_state.modo = 'mover'
     if 'hora_inicio' not in st.session_state:
         st.session_state.hora_inicio = datetime.datetime.now()
+    if 'mensagens' not in st.session_state:
+        st.session_state.mensagens = []
 
 def get_cor_equipe(equipe):
     if equipe == Equipe.HORACIOS:
