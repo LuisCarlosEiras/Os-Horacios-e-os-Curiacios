@@ -3,7 +3,7 @@ from .models import TipoUnidade, Equipe, Unidade
 
 class Tabuleiro:
     def __init__(self):
-        self.linhas = 18  # Tabuleiro mais alto
+        self.linhas = 10  # Tabuleiro mais alto
         self.colunas = 7  # Ajuste para 7 colunas
         self.tabuleiro = [[None for _ in range(self.colunas)] for _ in range(self.linhas)]
         self.equipe_atual = Equipe.HORACIOS
