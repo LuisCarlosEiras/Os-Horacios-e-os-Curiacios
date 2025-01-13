@@ -95,7 +95,7 @@ class Tabuleiro:
                     self.mensagens.append(f"Arma coletada: {arma.value}")
             
             # Remover armas coletadas
-            for arma em armas_para_remover:
+            for arma in armas_para_remover:
                 self.armas_no_tabuleiro.remove(arma)
 
     def atacar(self, pos_atacante: Tuple[int, int], pos_alvo: Tuple[int, int]) -> bool:
