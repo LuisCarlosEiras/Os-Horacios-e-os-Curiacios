@@ -3,8 +3,8 @@ from .models import TipoUnidade, Equipe, Unidade
 
 class Tabuleiro:
     def __init__(self):
-        self.linhas = 18  # Tabuleiro mais alto
-        self.colunas = 8  # Ajuste para 8 colunas
+        self.linhas = 10  # Tabuleiro mais alto
+        self.colunas = 7  # Ajuste para 7 colunas
         self.tabuleiro = [[None for _ in range(self.colunas)] for _ in range(self.linhas)]
         self.equipe_atual = Equipe.HORACIOS
         self.armas_no_tabuleiro = []  # Lista de tuplas (tipo_arma, posição)
@@ -35,7 +35,7 @@ class Tabuleiro:
         for i, linha_tipos in enumerate(tipos_unidades):
             for j, tipo_unidade in enumerate(linha_tipos):
                 linha = linha_inicial + i
-                coluna = (self.colunas // 2 - 1) + (j - 1)  # Centralizar na horizontal
+                coluna = (self.colunas // 2 - 1) + j  # Centralizar na horizontal
                 self.tabuleiro[linha][coluna] = Unidade(tipo_unidade, equipe, (linha, coluna))
 
     def inicializar_tabuleiro(self):
@@ -76,7 +76,7 @@ class Tabuleiro:
             self.tabuleiro[pos_destino[0]][pos_destino[1]] = unidade
             self.tabuleiro[pos_origem[0]][pos_origem[1]] = None
             unidade.posicao = pos_destino
-            self.mensagens.append(f"Unidade movida com sucesso")
+            self.mensagens.append("Unidade movida com sucesso")
             return True
         
         self.mensagens.append("Movimento inválido")
@@ -138,7 +138,7 @@ class Tabuleiro:
         alvo.esta_vivo = False
         atacante.arma.quantidade -= 1
         
-        self.mensagens.append(f"Ataque bem sucedido!")
+        self.mensagens.append("Ataque bem sucedido!")
         return True
 
     def proximo_turno(self):
