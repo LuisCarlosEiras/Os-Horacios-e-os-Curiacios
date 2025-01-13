@@ -175,13 +175,13 @@ class Tabuleiro:
             return None
 
         # Verificar vitória
-        if not horacios_vivos and não curiacios_vivos:
+        if not horacios_vivos and not curiacios_vivos:
             self.mensagens.append("Empate - Todos os guerreiros caíram!")
             return None
-        elif não curiacios_vivos:
+        elif not curiacios_vivos:
             self.mensagens.append("Vitória dos Horácios!")
             return Equipe.HORACIOS
-        elif não horacios_vivos:
+        elif not horacios_vivos:
             self.mensagens.append("Vitória dos Curiácios!")
             return Equipe.CURIACIOS
         
@@ -227,8 +227,8 @@ class Tabuleiro:
 
     def exibir_informacoes_guerreiros(self):
         """Exibe informações detalhadas sobre os guerreiros, incluindo a quantidade de armas"""
-        for linha em self.tabuleiro:
-            for unidade em linha:
+        for linha in self.tabuleiro:
+            for unidade in linha:
                 if unidade:
                     if unidade.tipo == TipoUnidade.ESPADACHIM:
                         print(f"{unidade.equipe.name} Espadachim - Armas: {unidade.arma.quantidade}")
