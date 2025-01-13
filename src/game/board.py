@@ -90,7 +90,7 @@ class Tabuleiro:
                 if pos == pos_destino:
                     unidade.tipo = arma
                     unidade.arma.tipo = arma
-                    unidade.arma.quantidade = 1 se arma == TipoUnidade.ESPADACHIM else 3
+                    unidade.arma.quantidade = 1 if arma == TipoUnidade.ESPADACHIM else 3
                     armas_para_remover.append((arma, pos))
                     self.mensagens.append(f"Arma coletada: {arma.value}")
             
