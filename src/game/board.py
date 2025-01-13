@@ -3,8 +3,8 @@ from .models import TipoUnidade, Equipe, Unidade
 
 class Tabuleiro:
     def __init__(self):
-        self.linhas = 18  # Tabuleiro mais alto
-        self.colunas = 9  # e mais estreito
+        self.linhas = 10  # Tabuleiro mais alto
+        self.colunas = 8  # e mais estreito
         self.tabuleiro = [[None for _ in range(self.colunas)] for _ in range(self.linhas)]
         self.equipe_atual = Equipe.HORACIOS
         self.armas_no_tabuleiro = []  # Lista de tuplas (tipo_arma, posição)
