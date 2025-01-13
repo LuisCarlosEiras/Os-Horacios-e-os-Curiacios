@@ -36,7 +36,13 @@ class Tabuleiro:
             for j, tipo_unidade in enumerate(linha_tipos):
                 linha = linha_inicial + i
                 coluna = (self.colunas // 2 - 1) + j  # Centralizar na horizontal
-                self.tabuleiro[linha][coluna] = Unidade(tipo_unidade, equipe, (linha, coluna))
+                unidade = Unidade(tipo_unidade, equipe, (linha, coluna))
+                
+                # Garantir que cada espadachim tenha 3 espadas
+                if tipo_unidade == TipoUnidade.ESPADACHIM:
+                    unidade.arma.quantidade = 3
+                
+                self.tabuleiro[linha][coluna] = unidade
 
     def inicializar_tabuleiro(self):
         # Horácios no topo
@@ -164,7 +170,7 @@ class Tabuleiro:
                         curiacios_vivos = True
 
         # Verificar condição de paz
-        if todas_unidades_sem_armas and horacios_vivos and curiacios_vivos:
+        if todas as unidades sem armas e horacios_vivos e curiacios_vivos:
             self.mensagens.append("Paz declarada - Todas as unidades sem armas!")
             return None
 
@@ -190,8 +196,8 @@ class Tabuleiro:
             'horacios_vivos': sum(1 for linha in self.tabuleiro 
                                 for unidade in linha 
                                 if unidade and unidade.equipe == Equipe.HORACIOS and unidade.esta_vivo),
-            'curiacios_vivos': sum(1 for linha in self.tabuleiro 
-                                 for unidade in linha 
+            'curiacios_vivos': sum(1 for linha em self.tabuleiro 
+                                 for unidade em linha 
                                  if unidade and unidade.equipe == Equipe.CURIACIOS and unidade.esta_vivo)
         }
 
