@@ -16,7 +16,7 @@ class Equipe(Enum):
 class Arma:
     def __init__(self, tipo_arma: TipoUnidade):
         self.tipo = tipo_arma
-        self.quantidade = 3 if tipo_arma in [TipoUnidade.ARQUEIRO, TipoUnidade.LANCEIRO] else 1
+        self.quantidade = 3 if tipo_arma in [TipoUnidade.ARQUEIRO, TipoUnidade.LANCEIRO, TipoUnidade.ESPADACHIM ] else 1
 
 class Unidade:
     def __init__(self, tipo_unidade: TipoUnidade, equipe: Equipe, posicao: Tuple[int, int]):
