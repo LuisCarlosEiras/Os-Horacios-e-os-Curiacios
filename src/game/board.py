@@ -125,7 +125,7 @@ class Tabuleiro:
 
         # Se não houver alvo, mas o ataque é válido, marcar a arma no tabuleiro
         if not alvo:
-            if atacante.tipo em [TipoUnidade.ARQUEIRO, TipoUnidade.LANCEIRO]:
+            if atacante.tipo in [TipoUnidade.ARQUEIRO, TipoUnidade.LANCEIRO]:
                 self.armas_no_tabuleiro.append((atacante.tipo, pos_alvo))
                 atacante.arma.quantidade -= 1
                 self.mensagens.append(f"Arma perdida no tabuleiro: {atacante.tipo.value}")
