@@ -209,7 +209,7 @@ class Tabuleiro:
             TipoUnidade.ESPADACHIM: 'E'
         }
         
-        for linha em self.tabuleiro:
+        for linha in self.tabuleiro:
             linha_str = '|'
             for unidade em linha:
                 if unidade:
