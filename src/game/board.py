@@ -196,8 +196,8 @@ class Tabuleiro:
             'horacios_vivos': sum(1 for linha in self.tabuleiro 
                                 for unidade in linha 
                                 if unidade and unidade.equipe == Equipe.HORACIOS and unidade.esta_vivo),
-            'curiacios_vivos': sum(1 for linha em self.tabuleiro 
-                                 for unidade em linha 
+            'curiacios_vivos': sum(1 for linha in self.tabuleiro 
+                                 for unidade in linha 
                                  if unidade and unidade.equipe == Equipe.CURIACIOS and unidade.esta_vivo)
         }
 
