@@ -77,6 +77,7 @@ class Tabuleiro:
             self.tabuleiro[pos_origem[0]][pos_origem[1]] = None
             unidade.posicao = pos_destino
             self.mensagens.append("Unidade movida com sucesso")
+            self.proximo_turno()  # Alternar turno após movimento bem-sucedido
             return True
         
         self.mensagens.append("Movimento inválido")
@@ -122,6 +123,7 @@ class Tabuleiro:
                 self.armas_no_tabuleiro.append((atacante.tipo, pos_alvo))
                 atacante.arma.quantidade -= 1
                 self.mensagens.append(f"Arma perdida no tabuleiro: {atacante.tipo.value}")
+                self.proximo_turno()  # Alternar turno após ataque bem-sucedido
                 return True
             return False
 
@@ -139,6 +141,7 @@ class Tabuleiro:
         atacante.arma.quantidade -= 1
         
         self.mensagens.append("Ataque bem sucedido!")
+        self.proximo_turno()  # Alternar turno após ataque bem-sucedido
         return True
 
     def proximo_turno(self):
@@ -185,9 +188,9 @@ class Tabuleiro:
             'armas_no_tabuleiro': len(self.armas_no_tabuleiro),
             'mensagens': self.mensagens[-5:],  # Últimas 5 mensagens
             'horacios_vivos': sum(1 for linha in self.tabuleiro 
-                                for unidade in linha 
+                                for unidade em linha 
                                 if unidade and unidade.equipe == Equipe.HORACIOS and unidade.esta_vivo),
             'curiacios_vivos': sum(1 for linha in self.tabuleiro 
-                                 for unidade in linha 
+                                 for unidade em linha 
                                  if unidade and unidade.equipe == Equipe.CURIACIOS and unidade.esta_vivo)
         }
