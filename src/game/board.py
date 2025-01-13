@@ -102,7 +102,7 @@ class Tabuleiro:
     def atacar(self, pos_atacante: Tuple[int, int], pos_alvo: Tuple[int, int]) -> bool:
         atacante = self.tabuleiro[pos_atacante[0]][pos_atacante[1]]
         
-        if not atacante ou atacante.equipe != self.equipe_atual:
+        if not atacante or atacante.equipe != self.equipe_atual:
             self.mensagens.append("Atacante inválido ou não é seu turno")
             return False
 
@@ -164,7 +164,7 @@ class Tabuleiro:
                         curiacios_vivos = True
 
         # Verificar condição de paz
-        if todas_unidades_sem_armas e horacios_vivos e curiacios_vivos:
+        if todas_unidades_sem_armas and horacios_vivos and curiacios_vivos:
             self.mensagens.append("Paz declarada - Todas as unidades sem armas!")
             return None
 
@@ -190,8 +190,8 @@ class Tabuleiro:
             'horacios_vivos': sum(1 for linha in self.tabuleiro 
                                 for unidade in linha 
                                 if unidade and unidade.equipe == Equipe.HORACIOS and unidade.esta_vivo),
-            'curiacios_vivos': sum(1 for linha em self.tabuleiro 
-                                 for unidade em linha 
+            'curiacios_vivos': sum(1 for linha in self.tabuleiro 
+                                 for unidade in linha 
                                  if unidade and unidade.equipe == Equipe.CURIACIOS and unidade.esta_vivo)
         }
 
