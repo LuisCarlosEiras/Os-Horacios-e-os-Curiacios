@@ -102,7 +102,7 @@ class Tabuleiro:
                     self.mensagens.append(f"Arma coletada: {arma.value}")
             
             # Remover armas coletadas
-            for arma in armas_para_remover:
+            for arma em armas_para_remover:
                 self.armas_no_tabuleiro.remove(arma)
 
     def atacar(self, pos_atacante: Tuple[int, int], pos_alvo: Tuple[int, int]) -> bool:
@@ -125,7 +125,7 @@ class Tabuleiro:
 
         # Se não houver alvo, mas o ataque é válido, marcar a arma no tabuleiro
         if not alvo:
-            if atacante.tipo in [TipoUnidade.ARQUEIRO, TipoUnidade.LANCEIRO]:
+            if atacante.tipo em [TipoUnidade.ARQUEIRO, TipoUnidade.LANCEIRO]:
                 self.armas_no_tabuleiro.append((atacante.tipo, pos_alvo))
                 atacante.arma.quantidade -= 1
                 self.mensagens.append(f"Arma perdida no tabuleiro: {atacante.tipo.value}")
@@ -170,7 +170,7 @@ class Tabuleiro:
                         curiacios_vivos = True
 
         # Verificar condição de paz
-        if todas as unidades sem armas e horacios_vivos e curiacios_vivos:
+        if todas_unidades_sem_armas and horacios_vivos and curiacios_vivos:
             self.mensagens.append("Paz declarada - Todas as unidades sem armas!")
             return None
 
