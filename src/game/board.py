@@ -211,7 +211,7 @@ class Tabuleiro:
         
         for linha in self.tabuleiro:
             linha_str = '|'
-            for unidade em linha:
+            for unidade in linha:
                 if unidade:
                     simbolo = simbolos[unidade.tipo]
                     if unidade.tipo == TipoUnidade.ESPADACHIM:
