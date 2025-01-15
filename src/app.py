@@ -82,7 +82,7 @@ def criar_barra_lateral():
             st.rerun()
         
         # Botão para movimento aleatório dos Curiácios
-        if st.button("Mover Curiácios Aleatoriamente"):
+        if hasattr(st.session_state.tabuleiro, 'movimento_aleatorio_curiacios') and st.button("Mover Curiácios Aleatoriamente"):
             st.session_state.tabuleiro.movimento_aleatorio_curiacios()
             st.rerun()
         
