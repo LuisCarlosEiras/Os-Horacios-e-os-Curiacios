@@ -253,7 +253,7 @@ class Tabuleiro:
                                 for unidade in linha 
                                 if unidade and unidade.equipe == Equipe.HORACIOS and unidade.esta_vivo),
             'curiacios_vivos': sum(1 for linha in self.tabuleiro 
-                                 for unidade em linha 
+                                 for unidade in linha 
                                  if unidade and unidade.equipe == Equipe.CURIACIOS and unidade.esta_vivo)
         }
 
@@ -281,8 +281,8 @@ class Tabuleiro:
         print("")
 
     def exibir_informacoes_guerreiros(self):
-        for linha em self.tabuleiro:
-            for unidade em linha:
+        for linha in self.tabuleiro:
+            for unidade in linha:
                 if unidade:
                     if unidade.tipo == TipoUnidade.ESPADACHIM:
                         print(f"{unidade.equipe.name} Espadachim - Armas: {unidade.arma.quantidade}")
