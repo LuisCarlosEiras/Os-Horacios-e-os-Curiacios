@@ -81,6 +81,11 @@ def criar_barra_lateral():
             st.session_state.hora_inicio = datetime.datetime.now()
             st.rerun()
         
+        # Botão para movimento aleatório dos Curiácios
+        if st.button("Mover Curiácios Aleatoriamente"):
+            st.session_state.tabuleiro.movimento_aleatorio_curiacios()
+            st.rerun()
+        
         # Informações do turno
         st.markdown("---")
         st.subheader("Turno Atual")
