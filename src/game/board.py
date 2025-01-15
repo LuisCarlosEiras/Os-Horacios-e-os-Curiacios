@@ -211,10 +211,10 @@ class Tabuleiro:
             'armas_no_tabuleiro': len(self.armas_no_tabuleiro),
             'mensagens': self.mensagens[-5:],  # Últimas 5 mensagens
             'horacios_vivos': sum(1 for linha in self.tabuleiro 
-                                for unidade em linha 
+                                for unidade in linha 
                                 if unidade and unidade.equipe == Equipe.HORACIOS and unidade.esta_vivo),
             'curiacios_vivos': sum(1 for linha in self.tabuleiro 
-                                 for unidade em linha 
+                                 for unidade in linha 
                                  if unidade and unidade.equipe == Equipe.CURIACIOS and unidade.esta_vivo)
         }
 
