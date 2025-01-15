@@ -101,7 +101,7 @@ def criar_barra_lateral():
         st.subheader("Unidades")
         st.write("🏹 Arqueiro (3 flechas, alcance: 7)")
         st.write("🗡️ Lanceiro (3 lanças, alcance: 4)")
-        st.write("⚔️ Espadachim (1 espada, alcance: 1)")
+        st.write("⚔️ Espadachim (3 espadas, alcance: 1)")
         
         st.subheader("Armas no Campo")
         st.write("↟ Flecha perdida")
