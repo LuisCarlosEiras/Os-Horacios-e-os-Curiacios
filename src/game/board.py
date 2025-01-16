@@ -176,11 +176,17 @@ class Tabuleiro:
             self.mensagens.append("Paz declarada - Todas as unidades sem armas!")
             return None
 
-        if not horacios_vivos and not curiacios_vivos:
+           if not horacios_vivos and not curiacios_vivos:
             self.mensagens.append("Empate - Todos os guerreiros caíram!")
             return None
         elif not curiacios_vivos:
-            self.mensagens.append("Vit
+            self.mensagens.append("Vitória dos Horácios!")
+            return Equipe.HORACIOS
+        elif not horacios_vivos:
+            self.mensagens.append("Vitória dos Curiácios!")
+            return Equipe.CURIACIOS
+
+        return None
     
 class Tabuleiro:
 
