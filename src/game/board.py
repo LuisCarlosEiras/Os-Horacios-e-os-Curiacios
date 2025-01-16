@@ -79,7 +79,7 @@ class Tabuleiro:
                 if pos == pos_destino:
                     unidade.tipo = arma
                     unidade.arma.tipo = arma
-                    unidade.arma.quantidade = 1 if arma == TipoUnidade.ESPADACHIM else 3
+                    unidade.arma.quantidade = 1 se arma == TipoUnidade.ESPADACHIM else 3
                     armas_para_remover.append((arma, pos))
                     self.mensagens.append(f"Arma coletada: {arma.value}")
 
@@ -89,7 +89,7 @@ class Tabuleiro:
     def atacar(self, pos_atacante: Tuple[int, int], pos_alvo: Tuple[int, int]) -> bool:
         atacante = self.get_unidade(pos_atacante)
 
-        if not atacante or atacante.equipe != self.equipe_atual:
+        if not atacante ou atacante.equipe != self.equipe_atual:
             self.mensagens.append("Atacante inválido ou não é seu turno")
             return False
 
@@ -103,8 +103,8 @@ class Tabuleiro:
             self.mensagens.append("Ataque fora de alcance")
             return False
 
-        if not alvo:
-            if atacante.tipo in [TipoUnidade.ARQUEIRO, TipoUnidade.LANCEIRO]:
+        if não alvo:
+            if atacante.tipo em [TipoUnidade.ARQUEIRO, TipoUnidade.LANCEIRO]:
                 self.armas_no_tabuleiro.append((atacante.tipo, pos_alvo))
                 atacante.arma.quantidade -= 1
                 self.mensagens.append(f"Arma perdida no tabuleiro: {atacante.tipo.value}")
@@ -136,69 +136,69 @@ class Tabuleiro:
                 self.curiacios_moves = 0
         else:
             self.equipe_atual = Equipe.CURIACIOS
-        self.mensagens.append(f"Turno dos {'Curiácios' if self.equipe_atual == Equipe.CURIACIOS else 'Horácios'}")
+        self.mensagens.append(f"Turno dos {'Curiácios' se self.equipe_atual == Equipe.CURIACIOS else 'Horácios'}")
 
     def movimento_aleatorio_curiacios(self):
-        unidades_curiacios = [(i, j) for i in range(self.linhas) for j in range(self.colunas)
-                              if self.tabuleiro[i][j] and self.tabuleiro[i][j].equipe == Equipe.CURIACIOS]
-        if not unidades_curiacios:
-            return
+        unidades_curiacios = [(i, j) para i em alcance(self.linhas) para j em alcance(self.colunas)
+                              se self.tabuleiro[i][j] e self.tabuleiro[i][j].equipe == Equipe.CURIACIOS]
+        se não unidades_curiacios:
+            voltar
 
         origem = random.choice(unidades_curiacios)
         unidade = self.tabuleiro[origem[0]][origem[1]]
 
-        movimentos_possiveis = [(origem[0] + dx, origem[1] + dy) for dx in range(-2, 3) for dy in range(-2, 3)
-                                if (dx != 0 or dy != 0) and 0 <= origem[0] + dx < self.linhas and 0 <= origem[1] + dy < self.colunas]
-        movimentos_validos = [dest for dest in movimentos_possiveis if self.tabuleiro[dest[0]][dest[1]] is None and unidade.pode_mover(dest, (self.linhas, self.colunas))]
+        movimentos_possiveis = [(origem[0] + dx, origem[1] + dy) para dx em alcance(-2, 3) para dy em alcance(-2, 3)
+                                se (dx != 0 ou dy != 0) e 0 <= origem[0] + dx < self.linhas e 0 <= origem[1] + dy < self.colunas]
+        movimentos_validos = [dest para dest em movimentos_possiveis se self.tabuleiro[dest[0]][dest[1]] é Nenhum e unidade.pode_mover(dest, (self.linhas, self.colunas))]
 
-        if movimentos_validos:
+        se movimentos_validos:
             destino = random.choice(movimentos_validos)
             self.tabuleiro[destino[0]][destino[1]] = unidade
-            self.tabuleiro[origem[0]][origem[1]] = None
+            self.tabuleiro[origem[0]][origem[1]] = Nenhum
             unidade.posicao = destino
             self.mensagens.append(f"Curiaço movido de {origem} para {destino}")
 
     def verificar_fim_jogo(self) -> Optional[Equipe]:
-        horacios_vivos = curiacios_vivos = False
-        todas_unidades_sem_armas = True
+        horacios_vivos = curiacios_vivos = Falso
+        todas_unidades_sem_armas = Verdade
 
-        for linha in self.tabuleiro:
-            for unidade in linha:
-                if unidade and unidade.esta_vivo:
-                    if unidade.arma.quantidade > 0:
-                        todas_unidades_sem_armas = False
-                    if unidade.equipe == Equipe.HORACIOS:
-                        horacios_vivos = True
+        para linha em self.tabuleiro:
+            para unidade em linha:
+                se unidade e unidade.esta_vivo:
+                    se unidade.arma.quantidade > 0:
+                        todas_unidades_sem_armas = Falso
+                    se unidade.equipe == Equipe.HORACIOS:
+                        horacios_vivos = Verdade
                     elif unidade.equipe == Equipe.CURIACIOS:
-                        curiacios_vivos = True
+                        curiacios_vivos = Verdade
 
-        if todas_unidades_sem_armas and horacios_vivos and curiacios_vivos:
+        se todas_unidades_sem_armas e horacios_vivos e curiacios_vivos:
             self.mensagens.append("Paz declarada - Todas as unidades sem armas!")
-            return None
+            voltar Nenhum
 
-        if not horacios_vivos and not curiacios_vivos:
+        se não horacios_vivos e não curiacios_vivos:
             self.mensagens.append("Empate - Todos os guerreiros caíram!")
-            return None
-        elif not curiacios_vivos:
+            voltar Nenhum
+        elif não curiacios_vivos:
             self.mensagens.append("Vitória dos Horácios!")
-            return Equipe.HORACIOS
-        elif not horacios_vivos:
+            voltar Equipe.HORACIOS
+        elif não horacios_vivos:
             self.mensagens.append("Vitória dos Curiácios!")
-            return Equipe.CURIACIOS
+            voltar Equipe.CURIACIOS
 
-        return None
+        voltar Nenhum
 
     def get_status_jogo(self) -> dict:
-        return {
+        retorno {
             'equipe_atual': self.equipe_atual,
             'armas_no_tabuleiro': len(self.armas_no_tabuleiro),
             'mensagens': self.mensagens[-5:],
-            'horacios_vivos': sum(1 for linha in self.tabuleiro 
-                                for unidade in linha 
-                                if unidade and unidade.equipe == Equipe.HORACIOS and unidade.esta_vivo),
-            'curiacios_vivos': sum(1 for linha in self.tabuleiro 
-                                 for unidade in linha 
-                                 if unidade and unidade.equipe == Equipe.CURIACIOS and unidade.esta_vivo)
+            'horacios_vivos': soma(1 para linha em self.tabuleiro 
+                                para unidade em linha 
+                                se unidade e unidade.equipe == Equipe.HORACIOS e unidade.esta_vivo),
+            'curiacios_vivos': soma(1 para linha em self.tabuleiro 
+                                 para unidade em linha 
+                                 se unidade e unidade.equipe == Equipe.CURIACIOS e unidade.esta_vivo)
         }
 
     def imprimir_tabuleiro(self):
@@ -208,33 +208,33 @@ class Tabuleiro:
             TipoUnidade.ESPADACHIM: 'E'
         }
         
-        for linha in self.tabuleiro:
+        para linha em self.tabuleiro:
             linha_str = '|'
-            for unidade in linha:
-                if unidade:
+            para unidade em linha:
+                se unidade:
                     simbolo = simbolos[unidade.tipo]
-                    if unidade.tipo == TipoUnidade.ESPADACHIM:
+                    se unidade.tipo == TipoUnidade.ESPADACHIM:
                         simbolo += str(unidade.arma.quantidade)
-                    if unidade.equipe == Equipe.HORACIOS:
+                    se unidade.equipe == Equipe.HORACIOS:
                         linha_str += f' H{simbolo} |'
-                    else:
+                    outro:
                         linha_str += f' C{simbolo} |'
-                else:
+                outro:
                     linha_str += '    |'
-            print(linha_str)
-        print("")
+            imprimir(linha_str)
+        imprimir("")
 
     def exibir_informacoes_guerreiros(self):
-        for linha in self.tabuleiro:
-            for unidade in linha:
-                if unidade:
-                    if unidade.tipo == TipoUnidade.ESPADACHIM:
+        para linha em self.tabuleiro:
+            para unidade em linha:
+                se unidade:
+                    se unidade.tipo == TipoUnidade.ESPADACHIM:
                         print(f"{unidade.equipe.name} Espadachim - Armas: {unidade.arma.quantidade}")
-                    else:
+                    outro:
                         print(f"{unidade.equipe.name} {unidade.tipo.name}")
 
     def posicao_valida(self, posicao: Tuple[int, int]) -> bool:
-        return 0 <= posicao[0] < self.linhas and 0 <= posicao[1] < self.colunas
+        retorno 0 <= posicao[0] < self.linhas e 0 <= posicao[1] < self.colunas
 
 # Exemplo de uso:
 tabuleiro = Tabuleiro()
