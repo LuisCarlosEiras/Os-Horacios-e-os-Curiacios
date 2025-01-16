@@ -9,9 +9,10 @@ class Tabuleiro:
         self.linhas = 10  # Tabuleiro mais alto
         self.colunas = 7  # Ajuste para 7 colunas
         self.tabuleiro = [[None for _ in range(self.colunas)] for _ in range(self.linhas)]
-        self.equipe_atual = Equipe.HORACIOS
+        self.equipe_atual = Equipe.CURIACIOS  # Começar com os Curiácios
         self.armas_no_tabuleiro = []  # Lista de tuplas (tipo_arma, posição)
         self.mensagens = []
+        self.curiacios_moves = 0  # Contador de movimentos dos Curiácios
         self.inicializar_tabuleiro()
 
     def posicionar_equipe(self, equipe: Equipe, linha_inicial: int):
@@ -147,11 +148,21 @@ class Tabuleiro:
         self.proximo_turno()  # Alternar turno após ataque bem-sucedido
         return True
 
-    def proximo_turno(self):
-        if self.equipe_atual == Equipe.HORACIOS:
+       def proximo_turno(self):
+        if self.equipe_atual == Equipe.CURIACIOS:
             self.movimento_aleatorio_curiacios()  # Movimento aleatório dos Curiácios
-        self.equipe_atual = Equipe.CURIACIOS if self.equipe_atual == Equipe.HORACIOS else Equipe.HORACIOS
+            self.curiacios_moves += 1
+            if self.curiacios_moves >= 2:
+                self.equipe_atual = Equipe.HORACIOS
+                self.curiacios_moves = 0
+        else:
+            self.equipe_atual = Equipe.CURIACIOS
         self.mensagens.append(f"Turno dos {'Curiácios' if self.equipe_atual == Equipe.CURIACIOS else 'Horácios'}")
+
+# Exemplo de uso:
+tabuleiro = Tabuleiro()
+tabuleiro.imprimir_tabuleiro()
+tabuleiro.exibir_informacoes_guerreiros()
 
     def movimento_aleatorio_curiacios(self):
         unidades_curiacios = [(i, j) for i in range(self.linhas) for j in range(self.colunas)
