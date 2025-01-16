@@ -106,7 +106,7 @@ class Tabuleiro:
     def atacar(self, pos_atacante: Tuple[int, int], pos_alvo: Tuple[int, int]) -> bool:
         atacante = self.tabuleiro[pos_atacante[0]][pos_atacante[1]]
         
-        if not atacante ou atacante.equipe != self.equipe_atual:
+        if not atacante or atacante.equipe != self.equipe_atual:
             self.mensagens.append("Atacante inválido ou não é seu turno")
             return False
 
