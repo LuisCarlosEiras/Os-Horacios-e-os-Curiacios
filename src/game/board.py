@@ -49,6 +49,36 @@ class Tabuleiro:
     def posicao_valida(self, posicao: Tuple[int, int]) -> bool:
         return 0 <= posicao[0] < self.linhas and 0 <= posicao[1] < self.colunas
 
+    def verificar_fim_jogo(self) -> Optional[Equipe]:
+        horacios_vivos = curiacios_vivos = False
+        todas_unidades_sem_armas = True
+
+        for linha in self.tabuleiro:
+            for unidade in linha:
+                if unidade and unidade.esta_vivo:
+                    if unidade.arma.quantidade > 0:
+                        todas_unidades_sem_armas = False
+                    if unidade.equipe == Equipe.HORACIOS:
+                        horacios_vivos = True
+                    elif unidade.equipe == Equipe.CURIACIOS:
+                        curiacios_vivos = True
+
+        if todas_unidades_sem_armas and horacios_vivos and curiacios_vivos:
+            self.mensagens.append("Paz declarada - Todas as unidades sem armas!")
+            return None
+
+        if not horacios_vivos and not curiacios_vivos:
+            self.mensagens.append("Empate - Todos os guerreiros caíram!")
+            return None
+        elif not curiacios_vivos:
+            self.mensagens.append("Vitória dos Horácios!")
+            return Equipe.HORACIOS
+        elif not horacios_vivos:
+            self.mensagens.append("Vitória dos Curiácios!")
+            return Equipe.CURIACIOS
+
+        return None
+
     def imprimir_tabuleiro(self):
         simbolos = {
             TipoUnidade.ARQUEIRO: 'A',
