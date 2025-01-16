@@ -179,7 +179,7 @@ class Tabuleiro:
         todas_unidades_sem_armas = True
 
         for linha in self.tabuleiro:
-            for unidade em linha:
+            for unidade in linha:
                 if unidade and unidade.esta_vivo:
                     if unidade.arma.quantidade > 0:
                         todas_unidades_sem_armas = False
@@ -189,7 +189,7 @@ class Tabuleiro:
                         curiacios_vivos = True
 
         # Verificar condição de paz
-        if todas_unidades sem armas e horacios_vivos e curiacios_vivos:
+        if todas_unidades_sem_armas and horacios_vivos and curiacios_vivos:
             self.mensagens.append("Paz declarada - Todas as unidades sem armas!")
             return None
 
@@ -197,10 +197,10 @@ class Tabuleiro:
         if not horacios_vivos e não curiacios_vivos:
             self.mensagens.append("Empate - Todos os guerreiros caíram!")
             return None
-        elif não curiacios_vivos:
+        elif not curiacios_vivos:
             self.mensagens.append("Vitória dos Horácios!")
             return Equipe.HORACIOS
-        elif não horacios_vivos:
+        elif not horacios_vivos:
             self.mensagens.append("Vitória dos Curiácios!")
             return Equipe.CURIACIOS
         
@@ -213,10 +213,10 @@ class Tabuleiro:
             'armas_no_tabuleiro': len(self.armas_no_tabuleiro),
             'mensagens': self.mensagens[-5:],  # Últimas 5 mensagens
             'horacios_vivos': sum(1 for linha in self.tabuleiro 
-                                for unidade em linha 
+                                for unidade in linha 
                                 if unidade and unidade.equipe == Equipe.HORACIOS and unidade.esta_vivo),
             'curiacios_vivos': sum(1 for linha in self.tabuleiro 
-                                 for unidade em linha 
+                                 for unidade in linha 
                                  if unidade and unidade.equipe == Equipe.CURIACIOS and unidade.esta_vivo)
         }
 
@@ -228,9 +228,9 @@ class Tabuleiro:
             TipoUnidade.ESPADACHIM: 'E'
         }
         
-        for linha em self.tabuleiro:
+        for linha in self.tabuleiro:
             linha_str = '|'
-            for unidade em linha:
+            for unidade in linha:
                 if unidade:
                     simbolo = simbolos[unidade.tipo]
                     if unidade.tipo == TipoUnidade.ESPADACHIM:
@@ -246,8 +246,8 @@ class Tabuleiro:
 
     def exibir_informacoes_guerreiros(self):
         """Exibe informações detalhadas sobre os guerreiros, incluindo a quantidade de armas"""
-        for linha em self.tabuleiro:
-            for unidade em linha:
+        for linha in self.tabuleiro:
+            for unidade in linha:
                 if unidade:
                     if unidade.tipo == TipoUnidade.ESPADACHIM:
                         print(f"{unidade.equipe.name} Espadachim - Armas: {unidade.arma.quantidade}")
