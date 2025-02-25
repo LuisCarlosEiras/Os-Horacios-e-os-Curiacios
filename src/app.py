@@ -145,27 +145,27 @@ def criar_tabuleiro():
             unidade = tabuleiro.get_unidade((i, j))
             texto = ""
                 
-                # Verificar se há unidade na posição
-                if unidade:
-                    simbolo = get_simbolo_unidade(unidade)
-                    cor = get_cor_equipe(unidade.equipe)
-                    texto = f"{cor}{simbolo}"
-                else:
-                    # Verificar se há armas perdidas na posição
-                    arma_perdida = next((arma for arma, pos in tabuleiro.armas_no_tabuleiro if pos == (i, j)), None)
-                    if arma_perdida:
-                        texto = get_simbolo_arma(arma_perdida)
-                    else:
-                        texto = "⚪"
+         # Verificar se há unidade na posição
+        if unidade:
+            simbolo = get_simbolo_unidade(unidade)
+            cor = get_cor_equipe(unidade.equipe)
+            texto = f"{cor}{simbolo}"
+        else:
+            # Verificar se há armas perdidas na posição
+            arma_perdida = next((arma for arma, pos in tabuleiro.armas_no_tabuleiro if pos == (i, j)), None)
+            if arma_perdida:
+                texto = get_simbolo_arma(arma_perdida)
+            else:
+                texto = "⚪"
                 
-                # Destacar unidade selecionada
-                if st.session_state.unidade_selecionada == (i, j):
-                    texto = f"🟡{texto}"
+        # Destacar unidade selecionada
+        if st.session_state.unidade_selecionada == (i, j):
+            texto = f"🟡{texto}"
                     
-                # Criar botão da célula
-                if cols[j].button(texto, key=f"btn_{i}_{j}", use_container_width=True):
-                    clicar_celula(i, j)
-                    st.rerun()
+        # Criar botão da célula
+        if cols[j].button(texto, key=f"btn_{i}_{j}", use_container_width=True):
+            clicar_celula(i, j)
+            st.rerun()
 
 def mostrar_mensagens():
     st.markdown("---")
