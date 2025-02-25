@@ -7,7 +7,7 @@ class Tabuleiro:
         self.linhas = 10
         self.colunas = 7
         self.tabuleiro = [[None for _ in range(self.colunas)] for _ in range(self.linhas)]
-        self.equipe_atual = Equipe.CURIACIOS
+        self.equipe_atual = Equipe.HORACIOS
         self.armas_no_tabuleiro = []
         self.mensagens = []
         self.curiacios_moves = 0
