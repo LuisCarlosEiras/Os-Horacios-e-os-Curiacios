@@ -143,7 +143,7 @@ class Tabuleiro:
 
     def movimento_aleatorio_horacios(self):
         unidades_horacios = [(i, j) for i in range(self.linhas) for j in range(self.colunas)
-                         if self.tabuleiro[i][j] and self.tabuleiro[i][j].equipe == Equipe.HORACIOS]
+                             if self.tabuleiro[i][j] and self.tabuleiro[i][j].equipe == Equipe.HORACIOS]
         if not unidades_horacios:
             return
 
