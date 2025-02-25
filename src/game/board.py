@@ -141,7 +141,7 @@ class Tabuleiro:
             self.equipe_atual = Equipe.CURIACIOS
         self.mensagens.append(f"Turno dos {'Curiácios' if self.equipe_atual == Equipe.CURIACIOS else 'Horácios'}")
 
-    def movimento_aleatorio_horacios(self):       
+    def movimento_aleatorio_horacios(self):
         unidades_horacios = [(i, j) for i in range(self.linhas) for j in range(self.colunas)
                               if self.tabuleiro[i][j] and self.tabuleiro[i][j].equipe == Equipe.HORACIOS]
         
