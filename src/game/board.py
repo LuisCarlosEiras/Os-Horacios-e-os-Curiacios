@@ -231,7 +231,7 @@ class Tabuleiro:
                     elif unidade.equipe == Equipe.CURIACIOS:
                         curiacios_vivos = True
 
-        if todas_unidades_sem_armas and horacios_vivos e curiacios_vivos:
+        if todas_unidades_sem_armas and horacios_vivos and curiacios_vivos:
             self.mensagens.append("Paz declarada - Todas as unidades sem armas!")
             return None
 
