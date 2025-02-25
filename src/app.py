@@ -85,6 +85,26 @@ def criar_barra_lateral():
         if hasattr(st.session_state.tabuleiro, 'movimento_aleatorio_curiacios') and st.button("Mover Curiácios Aleatoriamente"):
             st.session_state.tabuleiro.movimento_aleatorio_curiacios()
             st.rerun()
+
+        def criar_barra_lateral():
+    with st.sidebar:
+        st.header("Os Horácios e os Curiácios")
+        st.subheader("Controles")
+        
+        # Modo de ação
+        st.session_state.modo = st.radio(
+            "Ação:",
+            ['mover', 'atacar'],
+            horizontal=True
+        )
+        
+        # Botão de movimento aleatório dos Horácios
+        if st.button("Mover Horácios Aleatoriamente"):
+            st.session_state.tabuleiro.movimento_aleatorio_horacios()
+        
+        # Botão de reinício
+        if st.button("Reiniciar Jogo"):
+            inicializar_estado()
         
         # Informações do turno
         st.markdown("---")
