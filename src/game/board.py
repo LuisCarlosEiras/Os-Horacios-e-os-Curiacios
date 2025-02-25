@@ -142,24 +142,24 @@ class Tabuleiro:
         self.mensagens.append(f"Turno dos {'Curiácios' if self.equipe_atual == Equipe.CURIACIOS else 'Horácios'}")
 
     def movimento_aleatorio_horacios(self):
-        unidades_horacios = [(i, j) for i in range(self.linhas) for j in range(self.colunas)
-                             if self.tabuleiro[i][j] and self.tabuleiro[i][j].equipe == Equipe.HORACIOS]
-        if not unidades_horacios:
-            return
+    unidades_horacios = [(i, j) for i in range(self.linhas) for j in range(self.colunas)
+                         if self.tabuleiro[i][j] and self.tabuleiro[i][j].equipe == Equipe.HORACIOS]
+    if not unidades_horacios:
+        return
 
-        origem = random.choice(unidades_horacios)
-        unidade = self.tabuleiro[origem[0]][origem[1]]
+    origem = random.choice(unidades_horacios)
+    unidade = self.tabuleiro[origem[0]][origem[1]]
 
-        movimentos_possiveis = [(origem[0] + dx, origem[1] + dy) for dx in range(-2, 3) for dy in range(-2, 3)
+    movimentos_possiveis = [(origem[0] + dx, origem[1] + dy) for dx in range(-2, 3) for dy in range(-2, 3)
                             if (dx != 0 or dy != 0) and 0 <= origem[0] + dx < self.linhas and 0 <= origem[1] + dy < self.colunas]
-        movimentos_validos = [dest for dest in movimentos_possiveis if self.tabuleiro[dest[0]][dest[1]] is None and unidade.pode_mover(dest, (self.linhas, self.colunas))]
+    movimentos_validos = [dest for dest in movimentos_possiveis if self.tabuleiro[dest[0]][dest[1]] is None and unidade.pode_mover(dest, (self.linhas, self.colunas))]
 
-        if movimentos_validos:
-            destino = random.choice(movimentos_validos)
-            self.tabuleiro[destino[0]][destino[1]] = unidade
-            self.tabuleiro[origem[0]][origem[1]] = None
-            unidade.posicao = destino
-            self.mensagens.append(f"Horácio movido de {origem} para {destino}")
+    if movimentos_validos:
+        destino = random.choice(movimentos_validos)
+        self.tabuleiro[destino[0]][destino[1]] = unidade
+        self.tabuleiro[origem[0]][origem[1]] = None
+        unidade.posicao = destino
+        self.mensagens.append(f"Horácio movido de {origem} para {destino}")
     
 
     def movimento_aleatorio_curiacios(self):
