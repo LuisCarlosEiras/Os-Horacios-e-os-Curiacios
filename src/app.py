@@ -86,7 +86,7 @@ def criar_barra_lateral():
             st.session_state.tabuleiro.movimento_aleatorio_curiacios()
             st.rerun()
 
-        def criar_barra_lateral():
+def criar_barra_lateral():
     with st.sidebar:
         st.header("Os Horácios e os Curiácios")
         st.subheader("Controles")
