@@ -141,9 +141,9 @@ def criar_tabuleiro():
         # Criar grade do tabuleiro
         for i in range(tabuleiro.linhas):
             cols = st.columns(tabuleiro.colunas)
-            for j in range(tabuleiro.colunas):
-                unidade = tabuleiro.get_unidade((i, j))
-                texto = ""
+        for j in range(tabuleiro.colunas):
+            unidade = tabuleiro.get_unidade((i, j))
+            texto = ""
                 
                 # Verificar se há unidade na posição
                 if unidade:
