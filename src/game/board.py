@@ -160,7 +160,6 @@ class Tabuleiro:
             self.tabuleiro[origem[0]][origem[1]] = None
             unidade.posicao = destino
             self.mensagens.append(f"Horácio movido de {origem} para {destino}")
-    
 
     def movimento_aleatorio_curiacios(self):
         unidades_curiacios = [(i, j) for i in range(self.linhas) for j in range(self.colunas)
