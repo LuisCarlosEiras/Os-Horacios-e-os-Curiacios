@@ -86,6 +86,8 @@ def criar_barra_lateral():
             st.session_state.tabuleiro.movimento_aleatorio_curiacios()
             st.rerun()
 
+#------------------------------
+
 def criar_barra_lateral():
     with st.sidebar:
         st.header("Os Horácios e os Curiácios")
@@ -101,6 +103,7 @@ def criar_barra_lateral():
         # Botão de movimento aleatório dos Horácios
         if st.button("Mover Horácios Aleatoriamente"):
             st.session_state.tabuleiro.movimento_aleatorio_horacios()
+            st.rerun()
         
         # Botão de reinício
         if st.button("Reiniciar Jogo"):
@@ -130,6 +133,8 @@ def criar_barra_lateral():
         st.subheader("Equipes")
         st.write("🔵 Horácios")
         st.write("🔴 Curiácios")
+
+#--------------------------
 
 def criar_tabuleiro():
     tabuleiro = st.session_state.tabuleiro
