@@ -1,221 +1,220 @@
 from typing import List, Tuple, Optional
-# from .models import TipoUnidade, Equipe, Unidade
-from game.models import TipoUnidade, Equipe, Unidade
+from game.models import UnitType, Team, Unit
 
-class Tabuleiro:
+class Board:
     def __init__(self):
-        self.linhas = 10
-        self.colunas = 7
-        self.tabuleiro = [[None for _ in range(self.colunas)] for _ in range(self.linhas)]
-        self.equipe_atual = Equipe.HORACIOS
-        self.armas_no_tabuleiro = []
-        self.mensagens = []
+        self.rows = 10
+        self.columns = 7
+        self.board = [[None for _ in range(self.columns)] for _ in range(self.rows)]
+        self.current_team = Team.HORACIOS
+        self.weapons_on_board = []
+        self.messages = []
         self.curiacios_moves = 0
-        self.inicializar_tabuleiro()
+        self.initialize_board()
 
-    def posicionar_equipe(self, equipe: Equipe, linha_inicial: int):
-        tipos_unidades = {
-            Equipe.HORACIOS: [
-                [TipoUnidade.ARQUEIRO, TipoUnidade.ARQUEIRO, TipoUnidade.ARQUEIRO],
-                [TipoUnidade.LANCEIRO, TipoUnidade.LANCEIRO, TipoUnidade.LANCEIRO],
-                [TipoUnidade.ESPADACHIM, TipoUnidade.ESPADACHIM, TipoUnidade.ESPADACHIM]
+    def position_team(self, team: Team, start_row: int):
+        unit_types = {
+            Team.HORACIOS: [
+                [UnitType.ARCHER, UnitType.ARCHER, UnitType.ARCHER],
+                [UnitType.LANCER, UnitType.LANCER, UnitType.LANCER],
+                [UnitType.SWORDSMAN, UnitType.SWORDSMAN, UnitType.SWORDSMAN]
             ],
-            Equipe.CURIACIOS: [
-                [TipoUnidade.ESPADACHIM, TipoUnidade.ESPADACHIM, TipoUnidade.ESPADACHIM],
-                [TipoUnidade.LANCEIRO, TipoUnidade.LANCEIRO, TipoUnidade.LANCEIRO],
-                [TipoUnidade.ARQUEIRO, TipoUnidade.ARQUEIRO, TipoUnidade.ARQUEIRO]
+            Team.CURIACIOS: [
+                [UnitType.SWORDSMAN, UnitType.SWORDSMAN, UnitType.SWORDSMAN],
+                [UnitType.LANCER, UnitType.LANCER, UnitType.LANCER],
+                [UnitType.ARCHER, UnitType.ARCHER, UnitType.ARCHER]
             ]
         }
 
-        for i, linha_tipos in enumerate(tipos_unidades[equipe]):
-            for j, tipo_unidade in enumerate(linha_tipos):
-                linha = linha_inicial + i
-                coluna = (self.colunas // 2 - 1) + j
-                unidade = Unidade(tipo_unidade, equipe, (linha, coluna))
-                if tipo_unidade == TipoUnidade.ESPADACHIM:
-                    unidade.arma.quantidade = 3
-                self.tabuleiro[linha][coluna] = unidade
+        for i, row_types in enumerate(unit_types[team]):
+            for j, unit_type in enumerate(row_types):
+                row = start_row + i
+                column = (self.columns // 2 - 1) + j
+                unit = Unit(unit_type, team, (row, column))
+                if unit_type == UnitType.SWORDSMAN:
+                    unit.weapon.quantity = 3
+                self.board[row][column] = unit
 
-    def inicializar_tabuleiro(self):
-        self.posicionar_equipe(Equipe.HORACIOS, 0)
-        self.posicionar_equipe(Equipe.CURIACIOS, self.linhas - 3)
-        self.mensagens.append("Jogo iniciado - Turno dos Horácios")
+    def initialize_board(self):
+        self.position_team(Team.HORACIOS, 0)
+        self.position_team(Team.CURIACIOS, self.rows - 3)
+        self.messages.append("Game started - Horacios' turn")
 
-    def get_unidade(self, posicao: Tuple[int, int]) -> Optional[Unidade]:
-        if 0 <= posicao[0] < self.linhas and 0 <= posicao[1] < self.colunas:
-            return self.tabuleiro[posicao[0]][posicao[1]]
+    def get_unit(self, position: Tuple[int, int]) -> Optional[Unit]:
+        if 0 <= position[0] < self.rows and 0 <= position[1] < self.columns:
+            return self.board[position[0]][position[1]]
         return None
 
-    def posicao_valida(self, posicao: Tuple[int, int]) -> bool:
-        return 0 <= posicao[0] < self.linhas and 0 <= posicao[1] < self.colunas
+    def valid_position(self, position: Tuple[int, int]) -> bool:
+        return 0 <= position[0] < self.rows and 0 <= position[1] < self.columns
 
-    def mover_unidade(self, pos_origem: Tuple[int, int], pos_destino: Tuple[int, int]) -> bool:
-        if not self.posicao_valida(pos_origem) or not self.posicao_valida(pos_destino):
-            self.mensagens.append("Posição inválida")
+    def move_unit(self, origin: Tuple[int, int], destination: Tuple[int, int]) -> bool:
+        if not self.valid_position(origin) or not self.valid_position(destination):
+            self.messages.append("Invalid position")
             return False
 
-        unidade = self.get_unidade(pos_origem)
-        if not unidade or unidade.equipe != self.equipe_atual:
-            self.mensagens.append("Unidade inválida ou não é seu turno")
+        unit = self.get_unit(origin)
+        if not unit or unit.team != self.current_team:
+            self.messages.append("Invalid unit or not your turn")
             return False
 
-        if self.get_unidade(pos_destino):
-            self.mensagens.append("Posição ocupada")
+        if self.get_unit(destination):
+            self.messages.append("Position occupied")
             return False
 
-        if unidade.pode_mover(pos_destino, (self.linhas, self.colunas)):
-            self.coletar_armas_no_caminho(unidade, pos_origem, pos_destino)
-            self.tabuleiro[pos_destino[0]][pos_destino[1]] = unidade
-            self.tabuleiro[pos_origem[0]][pos_origem[1]] = None
-            unidade.posicao = pos_destino
-            self.mensagens.append("Unidade movida com sucesso")
-            self.proximo_turno()
+        if unit.can_move(destination, (self.rows, self.columns)):
+            self.collect_weapons_on_path(unit, origin, destination)
+            self.board[destination[0]][destination[1]] = unit
+            self.board[origin[0]][origin[1]] = None
+            unit.position = destination
+            self.messages.append("Unit moved successfully")
+            self.next_turn()
             return True
 
-        self.mensagens.append("Movimento inválido")
+        self.messages.append("Invalid move")
         return False
 
-    def coletar_armas_no_caminho(self, unidade: Unidade, pos_origem: Tuple[int, int], pos_destino: Tuple[int, int]):
-        if unidade.arma.quantidade == 0:
-            armas_para_remover = []
-            for arma, pos in self.armas_no_tabuleiro:
-                if pos == pos_destino:
-                    unidade.tipo = arma
-                    unidade.arma.tipo = arma
-                    unidade.arma.quantidade = 1 if arma == TipoUnidade.ESPADACHIM else 3
-                    armas_para_remover.append((arma, pos))
-                    self.mensagens.append(f"Arma coletada: {arma.value}")
+    def collect_weapons_on_path(self, unit: Unit, origin: Tuple[int, int], destination: Tuple[int, int]):
+        if unit.weapon.quantity == 0:
+            weapons_to_remove = []
+            for weapon, pos in self.weapons_on_board:
+                if pos == destination:
+                    unit.type = weapon
+                    unit.weapon.type = weapon
+                    unit.weapon.quantity = 1 if weapon == UnitType.SWORDSMAN else 3
+                    weapons_to_remove.append((weapon, pos))
+                    self.messages.append(f"Weapon collected: {weapon.value}")
 
-            for arma in armas_para_remover:
-                self.armas_no_tabuleiro.remove(arma)
+            for weapon in weapons_to_remove:
+                self.weapons_on_board.remove(weapon)
 
-    def atacar(self, pos_atacante: Tuple[int, int], pos_alvo: Tuple[int, int]) -> bool:
-        atacante = self.get_unidade(pos_atacante)
+    def attack(self, attacker_pos: Tuple[int, int], target_pos: Tuple[int, int]) -> bool:
+        attacker = self.get_unit(attacker_pos)
 
-        if not atacante or atacante.equipe != self.equipe_atual:
-            self.mensagens.append("Atacante inválido ou não é seu turno")
+        if not attacker or attacker.team != self.current_team:
+            self.messages.append("Invalid attacker or not your turn")
             return False
 
-        if atacante.arma.quantidade <= 0:
-            self.mensagens.append("Unidade sem armas")
+        if attacker.weapon.quantity <= 0:
+            self.messages.append("Unit without weapons")
             return False
 
-        alvo = self.get_unidade(pos_alvo)
+        target = self.get_unit(target_pos)
 
-        if not atacante.pode_atacar(pos_alvo):
-            self.mensagens.append("Ataque fora de alcance")
+        if not attacker.can_attack(target_pos):
+            self.messages.append("Attack out of range")
             return False
 
-        if not alvo:
-            if atacante.tipo in [TipoUnidade.ARQUEIRO, TipoUnidade.LANCEIRO]:
-                self.armas_no_tabuleiro.append((atacante.tipo, pos_alvo))
-                atacante.arma.quantidade -= 1
-                self.mensagens.append(f"Arma perdida no tabuleiro: {atacante.tipo.value}")
-                self.proximo_turno()
+        if not target:
+            if attacker.type in [UnitType.ARCHER, UnitType.LANCER]:
+                self.weapons_on_board.append((attacker.type, target_pos))
+                attacker.weapon.quantity -= 1
+                self.messages.append(f"Weapon lost on board: {attacker.type.value}")
+                self.next_turn()
                 return True
             return False
 
-        if alvo.equipe == atacante.equipe:
-            self.mensagens.append("Não pode atacar aliados")
+        if target.team == attacker.team:
+            self.messages.append("Cannot attack allies")
             return False
 
-        if alvo.arma.quantidade > 0:
-            self.armas_no_tabuleiro.append((alvo.tipo, pos_alvo))
+        if target.weapon.quantity > 0:
+            self.weapons_on_board.append((target.type, target_pos))
 
-        self.tabuleiro[pos_alvo[0]][pos_alvo[1]] = None
-        alvo.esta_vivo = False
-        atacante.arma.quantidade -= 1
+        self.board[target_pos[0]][target_pos[1]] = None
+        target.is_alive = False
+        attacker.weapon.quantity -= 1
 
-        self.mensagens.append("Ataque bem sucedido!")
-        self.proximo_turno()
+        self.messages.append("Successful attack!")
+        self.next_turn()
         return True
 
-    def proximo_turno(self):
-        if self.equipe_atual == Equipe.CURIACIOS:
+    def next_turn(self):
+        if self.current_team == Team.CURIACIOS:
             self.curiacios_moves += 1
             if self.curiacios_moves >= 2:
-                self.equipe_atual = Equipe.HORACIOS
+                self.current_team = Team.HORACIOS
                 self.curiacios_moves = 0
         else:
-            self.equipe_atual = Equipe.CURIACIOS
-        self.mensagens.append(f"Turno dos {'Curiácios' if self.equipe_atual == Equipe.CURIACIOS else 'Horácios'}")
+            self.current_team = Team.CURIACIOS
+        self.messages.append(f"Turn of the {'Curiacios' if self.current_team == Team.CURIACIOS else 'Horacios'}")
 
-    def verificar_fim_jogo(self) -> Optional[Equipe]:
-        horacios_vivos = curiacios_vivos = False
-        todas_unidades_sem_armas = True
+    def check_game_end(self) -> Optional[Team]:
+        horacios_alive = curiacios_alive = False
+        all_units_without_weapons = True
 
-        for linha in self.tabuleiro:
-            for unidade in linha:
-                if unidade and unidade.esta_vivo:
-                    if unidade.arma.quantidade > 0:
-                        todas_unidades_sem_armas = False
-                    if unidade.equipe == Equipe.HORACIOS:
-                        horacios_vivos = True
-                    elif unidade.equipe == Equipe.CURIACIOS:
-                        curiacios_vivos = True
+        for row in self.board:
+            for unit in row:
+                if unit and unit.is_alive:
+                    if unit.weapon.quantity > 0:
+                        all_units_without_weapons = False
+                    if unit.team == Team.HORACIOS:
+                        horacios_alive = True
+                    elif unit.team == Team.CURIACIOS:
+                        curiacios_alive = True
 
-        if todas_unidades_sem_armas and horacios_vivos e curiacios_vivos:
-            self.mensagens.append("Paz declarada - Todas as unidades sem armas!")
+        if all_units_without_weapons and horacios_alive and curiacios_alive:
+            self.messages.append("Peace declared - All units without weapons!")
             return None
 
-        if not horacios_vivos and not curiacios_vivos:
-            self.mensagens.append("Empate - Todos os guerreiros caíram!")
+        if not horacios_alive and not curiacios_alive:
+            self.messages.append("Draw - All warriors have fallen!")
             return None
-        elif not curiacios_vivos:
-            self.mensagens.append("Vitória dos Horácios!")
-            return Equipe.HORACIOS
-        elif not horacios_vivos:
-            self.mensagens.append("Vitória dos Curiácios!")
-            return Equipe.CURIACIOS
+        elif not curiacios_alive:
+            self.messages.append("Victory for the Horacios!")
+            return Team.HORACIOS
+        elif not horacios_alive:
+            self.messages.append("Victory for the Curiacios!")
+            return Team.CURIACIOS
 
         return None
 
-    def get_status_jogo(self) -> dict:
+    def get_game_status(self) -> dict:
         return {
-            'equipe_atual': self.equipe_atual,
-            'armas_no_tabuleiro': len(self.armas_no_tabuleiro),
-            'mensagens': self.mensagens[-5:],
-            'horacios_vivos': sum(1 for linha in self.tabuleiro
-                                  for unidade in linha
-                                  if unidade and unidade.equipe == Equipe.HORACIOS and unidade.esta_vivo),
-            'curiacios_vivos': sum(1 for linha in self.tabuleiro
-                                   for unidade in linha
-                                   if unidade and unidade.equipe == Equipe.CURIACIOS and unidade.esta_vivo)
+            'current_team': self.current_team,
+            'weapons_on_board': len(self.weapons_on_board),
+            'messages': self.messages[-5:],
+            'horacios_alive': sum(1 for row in self.board
+                                  for unit in row
+                                  if unit and unit.team == Team.HORACIOS and unit.is_alive),
+            'curiacios_alive': sum(1 for row in self.board
+                                   for unit in row
+                                   if unit and unit.team == Team.CURIACIOS and unit.is_alive)
         }
 
-    def imprimir_tabuleiro(self):
-        simbolos = {
-            TipoUnidade.ARQUEIRO: 'A',
-            TipoUnidade.LANCEIRO: 'L',
-            TipoUnidade.ESPADACHIM: 'E'
+    def print_board(self):
+        symbols = {
+            UnitType.ARCHER: 'A',
+            UnitType.LANCER: 'L',
+            UnitType.SWORDSMAN: 'E'
         }
 
-        for linha in self.tabuleiro:
-            linha_str = '|'
-            for unidade in linha:
-                if unidade:
-                    simbolo = simbolos[unidade.tipo]
-                    if unidade.tipo == TipoUnidade.ESPADACHIM:
-                        simbolo += str(unidade.arma.quantidade)
-                    if unidade.equipe == Equipe.HORACIOS:
-                        linha_str += f' H{simbolo} |'
+        for row in self.board:
+            row_str = '|'
+            for unit in row:
+                if unit:
+                    symbol = symbols[unit.type]
+                    if unit.type == UnitType.SWORDSMAN:
+                        symbol += str(unit.weapon.quantity)
+                    if unit.team == Team.HORACIOS:
+                        row_str += f' H{symbol} |'
                     else:
-                        linha_str += f' C{simbolo} |'
+                        row_str += f' C{symbol} |'
                 else:
-                    linha_str += '    |'
-            print(linha_str)
+                    row_str += '    |'
+            print(row_str)
         print("")
 
-    def exibir_informacoes_guerreiros(self):
-        for linha in self.tabuleiro:
-            for unidade in linha:
-                if unidade:
-                    if unidade.tipo == TipoUnidade.ESPADACHIM:
-                        print(f"{unidade.equipe.name} Espadachim - Armas: {unidade.arma.quantidade}")
+    def display_warrior_info(self):
+        for row in self.board:
+            for unit in row:
+                if unit:
+                    if unit.type == UnitType.SWORDSMAN:
+                        print(f"{unit.team.name} Swordsman - Weapons: {unit.weapon.quantity}")
                     else:
-                        print(f"{unidade.equipe.name} {unidade.tipo.name}")
+                        print(f"{unit.team.name} {unit.type.name}")
 
-# Exemplo de uso:
-tabuleiro = Tabuleiro()
-tabuleiro.imprimir_tabuleiro()
-tabuleiro.exibir_informacoes_guerreiros()
+# Example usage:
+board = Board()
+board.print_board()
+board.display_warrior_info()
