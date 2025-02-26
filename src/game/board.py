@@ -1,6 +1,5 @@
 from typing import List, Tuple, Optional
 from .models import TipoUnidade, Equipe, Unidade
-import random
 
 class Tabuleiro:
     def __init__(self):
@@ -132,7 +131,6 @@ class Tabuleiro:
 
     def proximo_turno(self):
         if self.equipe_atual == Equipe.CURIACIOS:
-            self.movimento_aleatorio_curiacios()
             self.curiacios_moves += 1
             if self.curiacios_moves >= 2:
                 self.equipe_atual = Equipe.HORACIOS
@@ -140,82 +138,6 @@ class Tabuleiro:
         else:
             self.equipe_atual = Equipe.CURIACIOS
         self.mensagens.append(f"Turno dos {'Curiácios' if self.equipe_atual == Equipe.CURIACIOS else 'Horácios'}")
-
-    def movimento_aleatorio_horacios(self):
-        # Encontra todas as unidades dos Horácios no tabuleiro
-        unidades_horacios = []
-        for i in range(self.linhas):
-            for j in range(self.colunas):
-                if self.tabuleiro[i][j] and self.tabuleiro[i][j].equipe == Equipe.HORACIOS:
-                    unidades_horacios.append((i, j))
-        
-        if not unidades_horacios:
-            return
-
-        origem = random.choice(unidades_horacios)
-        unidade = self.tabuleiro[origem[0]][origem[1]]
-
-        # Gera todos os movimentos possíveis
-        movimentos_possiveis = []
-        for dx in range(-2, 3):
-            for dy in range(-2, 3):
-                if dx == 0 and dy == 0:
-                    continue
-                nova_linha = origem[0] + dx
-                nova_coluna = origem[1] + dy
-                if 0 <= nova_linha < self.linhas and 0 <= nova_coluna < self.colunas:
-                    movimentos_possiveis.append((nova_linha, nova_coluna))
-        
-        # Filtra para movimentos válidos
-        movimentos_validos = []
-        for dest in movimentos_possiveis:
-            if self.tabuleiro[dest[0]][dest[1]] is None and unidade.pode_mover(dest, (self.linhas, self.colunas)):
-                movimentos_validos.append(dest)
-
-        if movimentos_validos:
-            destino = random.choice(movimentos_validos)
-            self.tabuleiro[destino[0]][destino[1]] = unidade
-            self.tabuleiro[origem[0]][origem[1]] = None
-            unidade.posicao = destino
-            self.mensagens.append(f"Horácio movido de {origem} para {destino}")
-
-    def movimento_aleatorio_curiacios(self):
-        # Encontra todas as unidades dos Curiácios no tabuleiro
-        unidades_curiacios = []
-        for i in range(self.linhas):
-            for j in range(self.colunas):
-                if self.tabuleiro[i][j] and self.tabuleiro[i][j].equipe == Equipe.CURIACIOS:
-                    unidades_curiacios.append((i, j))
-        
-        if not unidades_curiacios:
-            return
-
-        origem = random.choice(unidades_curiacios)
-        unidade = self.tabuleiro[origem[0]][origem[1]]
-
-        # Gera todos os movimentos possíveis
-        movimentos_possiveis = []
-        for dx in range(-2, 3):
-            for dy in range(-2, 3):
-                if dx == 0 and dy == 0:
-                    continue
-                nova_linha = origem[0] + dx
-                nova_coluna = origem[1] + dy
-                if 0 <= nova_linha < self.linhas and 0 <= nova_coluna < self.colunas:
-                    movimentos_possiveis.append((nova_linha, nova_coluna))
-        
-        # Filtra para movimentos válidos
-        movimentos_validos = []
-        for dest in movimentos_possiveis:
-            if self.tabuleiro[dest[0]][dest[1]] is None and unidade.pode_mover(dest, (self.linhas, self.colunas)):
-                movimentos_validos.append(dest)
-
-        if movimentos_validos:
-            destino = random.choice(movimentos_validos)
-            self.tabuleiro[destino[0]][destino[1]] = unidade
-            self.tabuleiro[origem[0]][origem[1]] = None
-            unidade.posicao = destino
-            self.mensagens.append(f"Curiaço movido de {origem} para {destino}")
 
     def verificar_fim_jogo(self) -> Optional[Equipe]:
         horacios_vivos = curiacios_vivos = False
@@ -231,7 +153,7 @@ class Tabuleiro:
                     elif unidade.equipe == Equipe.CURIACIOS:
                         curiacios_vivos = True
 
-        if todas_unidades_sem_armas and horacios_vivos and curiacios_vivos:
+        if todas_unidades_sem_armas and horacios_vivos e curiacios_vivos:
             self.mensagens.append("Paz declarada - Todas as unidades sem armas!")
             return None
 
@@ -252,12 +174,12 @@ class Tabuleiro:
             'equipe_atual': self.equipe_atual,
             'armas_no_tabuleiro': len(self.armas_no_tabuleiro),
             'mensagens': self.mensagens[-5:],
-            'horacios_vivos': sum(1 for linha in self.tabuleiro 
-                                for unidade in linha 
-                                if unidade and unidade.equipe == Equipe.HORACIOS and unidade.esta_vivo),
-            'curiacios_vivos': sum(1 for linha in self.tabuleiro 
-                                 for unidade in linha 
-                                 if unidade and unidade.equipe == Equipe.CURIACIOS and unidade.esta_vivo)
+            'horacios_vivos': sum(1 for linha in self.tabuleiro
+                                  for unidade in linha
+                                  if unidade and unidade.equipe == Equipe.HORACIOS and unidade.esta_vivo),
+            'curiacios_vivos': sum(1 for linha in self.tabuleiro
+                                   for unidade in linha
+                                   if unidade and unidade.equipe == Equipe.CURIACIOS and unidade.esta_vivo)
         }
 
     def imprimir_tabuleiro(self):
@@ -266,7 +188,7 @@ class Tabuleiro:
             TipoUnidade.LANCEIRO: 'L',
             TipoUnidade.ESPADACHIM: 'E'
         }
-        
+
         for linha in self.tabuleiro:
             linha_str = '|'
             for unidade in linha:
