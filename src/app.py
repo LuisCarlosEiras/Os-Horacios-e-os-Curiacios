@@ -1,220 +1,189 @@
-from typing import List, Tuple, Optional
-from game.models import UnitType, Team, Unit
+import asyncio
+from streamlit.runtime.scriptrunner import get_script_run_ctx
+if not get_script_run_ctx():
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-class Board:
-    def __init__(self):
-        self.rows = 10
-        self.columns = 7
-        self.board = [[None for _ in range(self.columns)] for _ in range(self.rows)]
-        self.current_team = Team.HORACIOS
-        self.weapons_on_board = []
-        self.messages = []
-        self.curiacios_moves = 0
-        self.initialize_board()
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-    def position_team(self, team: Team, start_row: int):
-        unit_types = {
-            Team.HORACIOS: [
-                [UnitType.ARCHER, UnitType.ARCHER, UnitType.ARCHER],
-                [UnitType.LANCER, UnitType.LANCER, UnitType.LANCER],
-                [UnitType.SWORDSMAN, UnitType.SWORDSMAN, UnitType.SWORDSMAN]
-            ],
-            Team.CURIACIOS: [
-                [UnitType.SWORDSMAN, UnitType.SWORDSMAN, UnitType.SWORDSMAN],
-                [UnitType.LANCER, UnitType.LANCER, UnitType.LANCER],
-                [UnitType.ARCHER, UnitType.ARCHER, UnitType.ARCHER]
-            ]
-        }
+import streamlit as st
+from game.board import Board
+from game.models import Team, UnitType
+import datetime
 
-        for i, row_types in enumerate(unit_types[team]):
-            for j, unit_type in enumerate(row_types):
-                row = start_row + i
-                column = (self.columns // 2 - 1) + j
-                unit = Unit(unit_type, team, (row, column))
-                if unit_type == UnitType.SWORDSMAN:
-                    unit.weapon.quantity = 3
-                self.board[row][column] = unit
+def initialize_state():
+    if 'board' not in st.session_state:
+        st.session_state.board = Board()
+    if 'selected_unit' not in st.session_state:
+        st.session_state.selected_unit = None
+    if 'mode' not in st.session_state:
+        st.session_state.mode = 'move'
+    if 'start_time' not in st.session_state:
+        st.session_state.start_time = datetime.datetime.now()
+    if 'messages' not in st.session_state:
+        st.session_state.messages = []
 
-    def initialize_board(self):
-        self.position_team(Team.HORACIOS, 0)
-        self.position_team(Team.CURIACIOS, self.rows - 3)
-        self.messages.append("Game started - Horacios' turn")
+def get_team_color(team):
+    if team == Team.HORACIOS:
+        return "🔵"  # Blue for Horacios
+    elif team == Team.CURIACIOS:
+        return "🔴"  # Red for Curiacios
+    return "⚪"  # White for empty
 
-    def get_unit(self, position: Tuple[int, int]) -> Optional[Unit]:
-        if 0 <= position[0] < self.rows and 0 <= position[1] < self.columns:
-            return self.board[position[0]][position[1]]
-        return None
+def get_unit_symbol(unit):
+    if not unit:
+        return "　"
+    
+    unit_type = unit.type
+    weapons = unit.weapon.quantity
+    
+    if unit_type == UnitType.ARCHER:
+        return f"🏹{weapons}" if weapons > 0 else "🏹✖️"
+    elif unit_type == UnitType.LANCER:
+        return f"🗡️{weapons}" if weapons > 0 else "🗡️✖️"
+    elif unit_type == UnitType.SWORDSMAN:
+        return "⚔️" if weapons > 0 else "⚔️✖️"
+    return "　"
 
-    def valid_position(self, position: Tuple[int, int]) -> bool:
-        return 0 <= position[0] < self.rows and 0 <= position[1] < self.columns
+def get_weapon_symbol(weapon_type):
+    if weapon_type == UnitType.ARCHER:
+        return "↟"  # Symbol for arrow
+    elif weapon_type == UnitType.LANCER:
+        return "†"  # Symbol for lance
+    return "　"
 
-    def move_unit(self, origin: Tuple[int, int], destination: Tuple[int, int]) -> bool:
-        if not self.valid_position(origin) or not self.valid_position(destination):
-            self.messages.append("Invalid position")
-            return False
+def click_cell(i, j):
+    board = st.session_state.board
+    
+    # If no unit is selected
+    if st.session_state.selected_unit is None:
+        unit = board.get_unit((i, j))
+        if unit and unit.team == board.current_team:
+            st.session_state.selected_unit = (i, j)
+            board.messages.append(f"Unit selected at position ({i}, {j})")
+    else:
+        # If a unit is already selected
+        origin = st.session_state.selected_unit
+        if st.session_state.mode == 'move':
+            board.move_unit(origin, (i, j))
+        else:  # attack mode
+            board.attack(origin, (i, j))
+        st.session_state.selected_unit = None
 
-        unit = self.get_unit(origin)
-        if not unit or unit.team != self.current_team:
-            self.messages.append("Invalid unit or not your turn")
-            return False
+def create_sidebar():
+    with st.sidebar:
+        st.header("Horacios and Curiacios")
+        st.subheader("Controls")
+        
+        # Action mode
+        st.session_state.mode = st.radio(
+            "Action:",
+            ['move', 'attack'],
+            horizontal=True
+        )
+        
+        # Reset button
+        if st.button("Reset Game"):
+            initialize_state()
+        
+        # Turn information
+        st.markdown("---")
+        st.subheader("Current Turn")
+        current_team = "Horacios" if st.session_state.board.current_team == Team.HORACIOS else "Curiacios"
+        st.write(f"Playing: {get_team_color(st.session_state.board.current_team)} {current_team}")
+        
+        # Game time
+        elapsed_time = datetime.datetime.now() - st.session_state.start_time
+        st.write(f"Game time: {elapsed_time.seconds // 60}:{elapsed_time.seconds % 60:02d}")
+        
+        # Legend
+        st.markdown("---")
+        st.subheader("Units")
+        st.write("🏹 Archer (3 arrows, range: 7)")
+        st.write("🗡️ Lancer (3 lances, range: 4)")
+        st.write("⚔️ Swordsman (3 swords, range: 1)")
+        
+        st.subheader("Weapons on the Field")
+        st.write("↟ Lost arrow")
+        st.write("† Lost lance")
+        
+        st.subheader("Teams")
+        st.write("🔵 Horacios")
+        st.write("🔴 Curiacios")
 
-        if self.get_unit(destination):
-            self.messages.append("Position occupied")
-            return False
-
-        if unit.can_move(destination, (self.rows, self.columns)):
-            self.collect_weapons_on_path(unit, origin, destination)
-            self.board[destination[0]][destination[1]] = unit
-            self.board[origin[0]][origin[1]] = None
-            unit.position = destination
-            self.messages.append("Unit moved successfully")
-            self.next_turn()
-            return True
-
-        self.messages.append("Invalid move")
-        return False
-
-    def collect_weapons_on_path(self, unit: Unit, origin: Tuple[int, int], destination: Tuple[int, int]):
-        if unit.weapon.quantity == 0:
-            weapons_to_remove = []
-            for weapon, pos in self.weapons_on_board:
-                if pos == destination:
-                    unit.type = weapon
-                    unit.weapon.type = weapon
-                    unit.weapon.quantity = 1 if weapon == UnitType.SWORDSMAN else 3
-                    weapons_to_remove.append((weapon, pos))
-                    self.messages.append(f"Weapon collected: {weapon.value}")
-
-            for weapon in weapons_to_remove:
-                self.weapons_on_board.remove(weapon)
-
-    def attack(self, attacker_pos: Tuple[int, int], target_pos: Tuple[int, int]) -> bool:
-        attacker = self.get_unit(attacker_pos)
-
-        if not attacker or attacker.team != self.current_team:
-            self.messages.append("Invalid attacker or not your turn")
-            return False
-
-        if attacker.weapon.quantity <= 0:
-            self.messages.append("Unit without weapons")
-            return False
-
-        target = self.get_unit(target_pos)
-
-        if not attacker.can_attack(target_pos):
-            self.messages.append("Attack out of range")
-            return False
-
-        if not target:
-            if attacker.type in [UnitType.ARCHER, UnitType.LANCER]:
-                self.weapons_on_board.append((attacker.type, target_pos))
-                attacker.weapon.quantity -= 1
-                self.messages.append(f"Weapon lost on board: {attacker.type.value}")
-                self.next_turn()
-                return True
-            return False
-
-        if target.team == attacker.team:
-            self.messages.append("Cannot attack allies")
-            return False
-
-        if target.weapon.quantity > 0:
-            self.weapons_on_board.append((target.type, target_pos))
-
-        self.board[target_pos[0]][target_pos[1]] = None
-        target.is_alive = False
-        attacker.weapon.quantity -= 1
-
-        self.messages.append("Successful attack!")
-        self.next_turn()
-        return True
-
-    def next_turn(self):
-        if self.current_team == Team.CURIACIOS:
-            self.curiacios_moves += 1
-            if self.curiacios_moves >= 2:
-                self.current_team = Team.HORACIOS
-                self.curiacios_moves = 0
-        else:
-            self.current_team = Team.CURIACIOS
-        self.messages.append(f"Turn of the {'Curiacios' if self.current_team == Team.CURIACIOS else 'Horacios'}")
-
-    def check_game_end(self) -> Optional[Team]:
-        horacios_alive = curiacios_alive = False
-        all_units_without_weapons = True
-
-        for row in self.board:
-            for unit in row:
-                if unit and unit.is_alive:
-                    if unit.weapon.quantity > 0:
-                        all_units_without_weapons = False
-                    if unit.team == Team.HORACIOS:
-                        horacios_alive = True
-                    elif unit.team == Team.CURIACIOS:
-                        curiacios_alive = True
-
-        if all_units_without_weapons and horacios_alive and curiacios_alive:
-            self.messages.append("Peace declared - All units without weapons!")
-            return None
-
-        if not horacios_alive and not curiacios_alive:
-            self.messages.append("Draw - All warriors have fallen!")
-            return None
-        elif not curiacios_alive:
-            self.messages.append("Victory for the Horacios!")
-            return Team.HORACIOS
-        elif not horacios_alive:
-            self.messages.append("Victory for the Curiacios!")
-            return Team.CURIACIOS
-
-        return None
-
-    def get_game_status(self) -> dict:
-        return {
-            'current_team': self.current_team,
-            'weapons_on_board': len(self.weapons_on_board),
-            'messages': self.messages[-5:],
-            'horacios_alive': sum(1 for row in self.board
-                                  for unit in row
-                                  if unit and unit.team == Team.HORACIOS and unit.is_alive),
-            'curiacios_alive': sum(1 for row in self.board
-                                   for unit in row
-                                   if unit and unit.team == Team.CURIACIOS and unit.is_alive)
-        }
-
-    def print_board(self):
-        symbols = {
-            UnitType.ARCHER: 'A',
-            UnitType.LANCER: 'L',
-            UnitType.SWORDSMAN: 'E'
-        }
-
-        for row in self.board:
-            row_str = '|'
-            for unit in row:
+def create_board():
+    board = st.session_state.board
+    
+    # Container to center the board
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    with col2:
+        # Create board grid
+        for i in range(board.rows):
+            cols = st.columns(board.columns)
+            for j in range(board.columns):
+                unit = board.get_unit((i, j))
+                text = ""
+                    
+                # Check if there is a unit at the position
                 if unit:
-                    symbol = symbols[unit.type]
-                    if unit.type == UnitType.SWORDSMAN:
-                        symbol += str(unit.weapon.quantity)
-                    if unit.team == Team.HORACIOS:
-                        row_str += f' H{symbol} |'
-                    else:
-                        row_str += f' C{symbol} |'
+                    symbol = get_unit_symbol(unit)
+                    color = get_team_color(unit.team)
+                    text = f"{color}{symbol}"
                 else:
-                    row_str += '    |'
-            print(row_str)
-        print("")
-
-    def display_warrior_info(self):
-        for row in self.board:
-            for unit in row:
-                if unit:
-                    if unit.type == UnitType.SWORDSMAN:
-                        print(f"{unit.team.name} Swordsman - Weapons: {unit.weapon.quantity}")
+                    # Check if there are lost weapons at the position
+                    lost_weapon = next((weapon for weapon, pos in board.weapons_on_board if pos == (i, j)), None)
+                    if lost_weapon:
+                        text = get_weapon_symbol(lost_weapon)
                     else:
-                        print(f"{unit.team.name} {unit.type.name}")
+                        text = "⚪"
+                    
+                # Highlight selected unit
+                if st.session_state.selected_unit == (i, j):
+                    text = f"🟡{text}"
+                            
+                # Create cell button
+                if cols[j].button(text, key=f"btn_{i}_{j}", use_container_width=True):
+                    click_cell(i, j)
+                    st.rerun()
 
-# Example usage:
-board = Board()
-board.print_board()
-board.display_warrior_info()
+def show_messages():
+    st.markdown("---")
+    st.subheader("Game Messages")
+    for msg in reversed(st.session_state.board.messages[-5:]):
+        st.write(msg)
+
+def check_game_end():
+    board = st.session_state.board
+    winner = board.check_game_end()
+    
+    if winner:
+        st.balloons()
+        st.success(f"🎉 Victory for the {'Horacios' if winner == Team.HORACIOS else 'Curiacios'}! 🎉")
+        if st.button("New Game"):
+            st.session_state.board = Board()
+            st.session_state.selected_unit = None
+            st.session_state.start_time = datetime.datetime.now()
+            st.rerun()
+
+def main():
+    # Page configuration
+    st.set_page_config(
+        page_title="Horacios and Curiacios",
+        page_icon="⚔️",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+
+    # State initialization
+    initialize_state()
+
+    # Create interface
+    create_sidebar()
+    create_board()
+    show_messages()
+    check_game_end()
+
+if __name__ == "__main__":
+    main()
