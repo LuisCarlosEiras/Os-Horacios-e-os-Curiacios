@@ -1,5 +1,6 @@
 from typing import List, Tuple, Optional
-from .models import TipoUnidade, Equipe, Unidade
+# from .models import TipoUnidade, Equipe, Unidade
+from game.models import TipoUnidade, Equipe, Unidade
 
 class Tabuleiro:
     def __init__(self):
