@@ -1,3 +1,9 @@
+import asyncio
+from streamlit.runtime.scriptrunner import get_script_run_ctx
+if not get_script_run_ctx():
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+
 import streamlit as st
 from game.board import Tabuleiro
 from game.models import Equipe, TipoUnidade
