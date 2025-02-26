@@ -1,7 +1,3 @@
-Aqui está o arquivo `models.py` traduzido para inglês por completo:
-
-```python
-# src/game/models.py
 from enum import Enum
 from typing import Tuple, List, Optional
 import random
